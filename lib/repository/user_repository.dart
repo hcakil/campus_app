@@ -4,6 +4,7 @@ import 'package:campusapp/model/user.dart';
 import 'package:campusapp/service/auth_base.dart';
 import 'package:campusapp/service/fake_auth_service.dart';
 import 'package:campusapp/service/firebase_auth_service.dart';
+import 'package:campusapp/service/firestore_db_service.dart';
 
 //as timeago;
 
@@ -13,7 +14,7 @@ class UserRepository implements AuthBase {
   FirebaseAuthService _firebaseAuthService = locator<FirebaseAuthService>();
   FakeAuthenticationService _fakeAuthService =
   locator<FakeAuthenticationService>();
-  //FirestoreDBService _firestoreDBService = locator<FirestoreDBService>();
+  FirestoreDBService _firestoreDBService = locator<FirestoreDBService>();
   //FirebaseStorageService _firestoreStorageService =
   //locator<FirebaseStorageService>();
 /**/
@@ -28,10 +29,10 @@ class UserRepository implements AuthBase {
       return await _fakeAuthService.currentUser();
     } else {
       MyUser _user = await _firebaseAuthService.currentUser();
-      /*if (_user != null) {
+      if (_user != null) {
         return await _firestoreDBService.readUser(_user.userID);
       } else
-        return null;*/
+        return null;
     }
   }
 
@@ -49,19 +50,20 @@ class UserRepository implements AuthBase {
 
   @override
   Future<MyUser> createUserWithSignInWithEmail(
-      String email, String sifre) async {
+      String email, String sifre,String interest) async {
     if (appMode == AppMode.DEBUG) {
-      return await _fakeAuthService.createUserWithSignInWithEmail(email, sifre);
+      return await _fakeAuthService.createUserWithSignInWithEmail(email, sifre,interest);
     } else {
       MyUser _user = await _firebaseAuthService.createUserWithSignInWithEmail(
-          email, sifre);
-      return _user;
-      //bool _sonuc = await _firestoreDBService.saveUserWithEmailAndPassword(_user);
-     /* if (_sonuc) {
+          email, sifre,interest);
+      print("$interest in repo");
+      //return _user;
+      bool _sonuc = await _firestoreDBService.saveUserWithEmailAndPassword(_user,interest);
+      if (_sonuc) {
         return await _firestoreDBService.readUser(_user.userID);
       } else {
         return null;
-      }*/
+      }
     }
   }
 
@@ -72,8 +74,9 @@ class UserRepository implements AuthBase {
     } else {
       MyUser _user =
       await _firebaseAuthService.signInWithEmailAndPassword(email, sifre);
-return null;
-     // return await _firestoreDBService.readUser(_user.userID);
+
+//return _user;
+      return await _firestoreDBService.readUser(_user.userID);
     }
   }
 

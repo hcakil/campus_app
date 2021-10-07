@@ -8,5 +8,6 @@ abstract class AuthBase {
   Future<bool> signOut();
 
   Future<MyUser> signInWithEmailAndPassword(String email, String sifre);
-  Future<MyUser> createUserWithSignInWithEmail(String email, String sifre);
+//  Future<MyUser> signInWithEmailAndPassword(String email, String sifre,);
+  Future<MyUser> createUserWithSignInWithEmail(String email, String sifre,String interest);
 }

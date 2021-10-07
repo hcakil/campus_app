@@ -112,12 +112,13 @@ class UserModel with ChangeNotifier implements AuthBase {
   */
   @override
   Future<MyUser> createUserWithSignInWithEmail(
-      String email, String sifre) async {
+      String email, String sifre,String interest) async {
     //if (emailSifreKontrol(email, sifre)) {
+    print("$interest  interest in user model");
       try {
         state = ViewState.Busy;
         _user =
-        await _userRepository.createUserWithSignInWithEmail(email, sifre);
+        await _userRepository.createUserWithSignInWithEmail(email, sifre,interest);
 
         return _user;
       } finally {

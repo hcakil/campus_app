@@ -1,7 +1,6 @@
 import 'package:campusapp/model/user.dart';
 import 'package:campusapp/service/auth_base.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:flutter/cupertino.dart';
 
 
 
@@ -47,7 +46,7 @@ class FirebaseAuthService implements AuthBase {
 
   @override
   Future<MyUser> createUserWithSignInWithEmail(
-      String email, String sifre) async {
+      String email, String sifre,String interest) async {
     //try {
     UserCredential sonuc = await _firebaseAuth.createUserWithEmailAndPassword(
         email: email, password: sifre);
