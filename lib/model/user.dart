@@ -31,7 +31,7 @@ class MyUser {
       userName ?? email.substring(0, email.indexOf("@")) + randomSayiUret(),
       "interest": interest ?? "0",
       'profilURL': profilURL ??
-          'https://firebasestorage.googleapis.com/v0/b/pratixmessage.appspot.com/o/oVQCiC7VJYU11tLIRYNBa9Q10Ie2%2Fprofil_photo%2Fprofil_photo.png?alt=media&token=8a831d8b-9fff-4b5b-9d22-5864bdcd31f1',
+          'https://digitalpratix.com/wp-content/uploads/pexels-mentatdgt-1049622-365x365.jpg',
     //  'createdAt': createdAt ?? "",//FieldValue.serverTimestamp(),
      // 'updatedAt': updatedAt ?? "", //FieldValue.serverTimestamp(),
       'seviye': seviye ?? 1,

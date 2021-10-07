@@ -1,4 +1,6 @@
 
+import 'dart:io';
+
 import 'package:campusapp/locator.dart';
 import 'package:campusapp/model/user.dart';
 import 'package:campusapp/repository/user_repository.dart';
@@ -45,19 +47,6 @@ class UserModel with ChangeNotifier implements AuthBase {
     }
   }
 
- /* @override
-  Future<MyUser> signInAnonymously() async {
-    try {
-      state = ViewState.Busy;
-      _user = await _userRepository.signInAnonymously();
-      return _user;
-    } catch (e) {
-      debugPrint(" ViewModel deki sign In Anonymously  hata " + e);
-      return null;
-    } finally {
-      state = ViewState.Idle;
-    }
-  }*/
 
   @override
   Future<bool> signOut() async {
@@ -79,36 +68,6 @@ class UserModel with ChangeNotifier implements AuthBase {
     return tumKullaniciListesi;
   }
 
-  @override
-  Future<MyUser> signInWithGoogle() async {
-    try {
-      state = ViewState.Busy;
-      _user = await _userRepository.signInWithGoogle();
-      if (_user != null) {
-        return _user;
-      } else
-        return null;
-    } catch (e) {
-      debugPrint(" ViewModel deki current user hata " + e);
-      return null;
-    } finally {
-      state = ViewState.Idle;
-    }
-  }
-
-  @override
-  Future<MyUser> signInWithFacebook() async {
-    try {
-      state = ViewState.Busy;
-      _user = await _userRepository.signInWithFacebook();
-      if (_user != null) {
-        return _user;
-      } else
-        return null;
-    } finally {
-      state = ViewState.Idle;
-    }
-  }
   */
   @override
   Future<MyUser> createUserWithSignInWithEmail(
@@ -163,7 +122,7 @@ print("e mail şifre kontrole geşdi  -->"+email + "  "+sifre);
     return sonuc;
   }*/
 
- /* Future<bool> updateUserName(
+ Future<bool> updateUserName(
       String degisecekUserID, String yeniUserName) async {
     var sonuc =
     await _userRepository.updateUserName(degisecekUserID, yeniUserName);
@@ -172,14 +131,14 @@ print("e mail şifre kontrole geşdi  -->"+email + "  "+sifre);
     }
 
     return sonuc;
-  }*/
+  }
 
- /* Future<String> uploadFile(
+  Future<String> uploadFile(
       String userID, String fileType, File profilPhoto) async {
     var indirmeLinki =
     await _userRepository.uploadFile(userID, fileType, profilPhoto);
     return indirmeLinki;
-  }*/
+  }
 
 
 

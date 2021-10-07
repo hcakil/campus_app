@@ -46,7 +46,7 @@ class FirestoreDBService implements DBBase {
     print("okuunan user nesnesi" + _okunanUserNesnesi.toString());
     return _okunanUserNesnesi;
   }
-/*
+
   @override
   Future<bool> updateUserName(String userID, String yeniUserName) async {
     var users = await _firestoreDb
@@ -72,7 +72,7 @@ class FirestoreDBService implements DBBase {
         .update({"profilURL": profilPhotoUrl});
     return true;
   }
-*/
+
 /*
   @override
   Future<List<User>> getAllUser() async {

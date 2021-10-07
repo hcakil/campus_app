@@ -1,9 +1,12 @@
 
+import 'dart:io';
+
 import 'package:campusapp/locator.dart';
 import 'package:campusapp/model/user.dart';
 import 'package:campusapp/service/auth_base.dart';
 import 'package:campusapp/service/fake_auth_service.dart';
 import 'package:campusapp/service/firebase_auth_service.dart';
+import 'package:campusapp/service/firebase_storage_service.dart';
 import 'package:campusapp/service/firestore_db_service.dart';
 
 //as timeago;
@@ -15,8 +18,8 @@ class UserRepository implements AuthBase {
   FakeAuthenticationService _fakeAuthService =
   locator<FakeAuthenticationService>();
   FirestoreDBService _firestoreDBService = locator<FirestoreDBService>();
-  //FirebaseStorageService _firestoreStorageService =
-  //locator<FirebaseStorageService>();
+  FirebaseStorageService _firestoreStorageService =
+  locator<FirebaseStorageService>();
 /**/
 
   AppMode appMode = AppMode.RELEASE;
@@ -80,16 +83,16 @@ class UserRepository implements AuthBase {
     }
   }
 
-  /*Future<bool> updateUserName(
+  Future<bool> updateUserName(
       String degisecekUserID, String yeniUserName) async {
     if (appMode == AppMode.DEBUG) {
       return false;
     } else {
       return await _firestoreDBService.updateUserName(degisecekUserID, yeniUserName);
     }
-  }*/
+  }
 
- /* Future<String> uploadFile(
+  Future<String> uploadFile(
       String userID, String fileType, File profilPhoto) async {
     if (appMode == AppMode.DEBUG) {
       return "dosya indirme linki";
@@ -101,7 +104,7 @@ class UserRepository implements AuthBase {
 
       return profilPhotoUrl;
     }
-  }*/
+  }
 
   /* Future<List<User>> getAllUsers() async {
     if (appMode == AppMode.DEBUG) {
