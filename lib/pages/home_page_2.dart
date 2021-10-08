@@ -67,33 +67,5 @@ class _HomePage2State extends State<HomePage2> {
 
 
 
-     /* Scaffold(
-      appBar: AppBar(
-        toolbarHeight: 100,
-        automaticallyImplyLeading: false,
-        backgroundColor:  Colors.purple.shade600,
-        title: Row(
-         // mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-          children: [
-            Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-
-                Text(
-                "Campus App",
-                style: TextStyle(
-                  fontSize: 35,
-                  fontWeight: FontWeight.bold,
-                  fontFamily: "Lobster",
-                  color: Colors.white,
-                  letterSpacing: 3,
-                ),
-      ),
-              ],
-            ),
-          ],
-        ),),
-      body: Container(child: Center(child: Text("Tab Items Page  "),),),
-    );*/
   }
 }

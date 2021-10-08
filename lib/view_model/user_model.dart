@@ -1,12 +1,11 @@
-
 import 'dart:io';
 
 import 'package:campusapp/locator.dart';
+import 'package:campusapp/model/club.dart';
 import 'package:campusapp/model/user.dart';
 import 'package:campusapp/repository/user_repository.dart';
 import 'package:campusapp/service/auth_base.dart';
 import 'package:flutter/cupertino.dart';
-
 
 enum ViewState { Idle, Busy }
 
@@ -47,7 +46,6 @@ class UserModel with ChangeNotifier implements AuthBase {
     }
   }
 
-
   @override
   Future<bool> signOut() async {
     try {
@@ -71,29 +69,28 @@ class UserModel with ChangeNotifier implements AuthBase {
   */
   @override
   Future<MyUser> createUserWithSignInWithEmail(
-      String email, String sifre,String interest) async {
+      String email, String sifre, String interest) async {
     //if (emailSifreKontrol(email, sifre)) {
     print("$interest  interest in user model");
-      try {
-        state = ViewState.Busy;
-        _user =
-        await _userRepository.createUserWithSignInWithEmail(email, sifre,interest);
+    try {
+      state = ViewState.Busy;
+      _user = await _userRepository.createUserWithSignInWithEmail(
+          email, sifre, interest);
 
-        return _user;
-      } finally {
-        state = ViewState.Idle;
-      }
-
+      return _user;
+    } finally {
+      state = ViewState.Idle;
+    }
   }
 
   @override
   Future<MyUser> signInWithEmailAndPassword(String email, String sifre) async {
     try {
-     // if (emailSifreKontrol(email, sifre)) {
-        state = ViewState.Busy;
-        _user = await _userRepository.signInWithEmailAndPassword(email, sifre);
-        return _user;
-    /*  } else {
+      // if (emailSifreKontrol(email, sifre)) {
+      state = ViewState.Busy;
+      _user = await _userRepository.signInWithEmailAndPassword(email, sifre);
+      return _user;
+      /*  } else {
         return null;
       }*/
     } finally {
@@ -122,10 +119,10 @@ print("e mail şifre kontrole geşdi  -->"+email + "  "+sifre);
     return sonuc;
   }*/
 
- Future<bool> updateUserName(
+  Future<bool> updateUserName(
       String degisecekUserID, String yeniUserName) async {
     var sonuc =
-    await _userRepository.updateUserName(degisecekUserID, yeniUserName);
+        await _userRepository.updateUserName(degisecekUserID, yeniUserName);
     if (sonuc) {
       _user.userName = yeniUserName;
     }
@@ -136,15 +133,23 @@ print("e mail şifre kontrole geşdi  -->"+email + "  "+sifre);
   Future<String> uploadFile(
       String userID, String fileType, File profilPhoto) async {
     var indirmeLinki =
-    await _userRepository.uploadFile(userID, fileType, profilPhoto);
+        await _userRepository.uploadFile(userID, fileType, profilPhoto);
     return indirmeLinki;
   }
 
+  Future<bool> updateInterest(String userID, String newInterest) async {
+    var sonuc = await _userRepository.updateInterest(userID, newInterest);
+    if (sonuc) {
+      _user.interest = newInterest;
+    }
+    return sonuc;
+  }
 
+  Future<List<Club>> getAllClubs() async {
+    return await _userRepository.getAllClubs();
+  }
 
-
-
-  /*Future<List<MyUser>> getUserWithPagination(
+/*Future<List<MyUser>> getUserWithPagination(
       MyUser enSonGetirilenUser, int getirilecekElemanSayisi) async {
     return await _userRepository.getUserWithPagination(
         enSonGetirilenUser, getirilecekElemanSayisi);

@@ -1,7 +1,7 @@
-
 import 'dart:io';
 
 import 'package:campusapp/locator.dart';
+import 'package:campusapp/model/club.dart';
 import 'package:campusapp/model/user.dart';
 import 'package:campusapp/service/auth_base.dart';
 import 'package:campusapp/service/fake_auth_service.dart';
@@ -16,10 +16,11 @@ enum AppMode { DEBUG, RELEASE }
 class UserRepository implements AuthBase {
   FirebaseAuthService _firebaseAuthService = locator<FirebaseAuthService>();
   FakeAuthenticationService _fakeAuthService =
-  locator<FakeAuthenticationService>();
+      locator<FakeAuthenticationService>();
   FirestoreDBService _firestoreDBService = locator<FirestoreDBService>();
   FirebaseStorageService _firestoreStorageService =
-  locator<FirebaseStorageService>();
+      locator<FirebaseStorageService>();
+
 /**/
 
   AppMode appMode = AppMode.RELEASE;
@@ -39,8 +40,6 @@ class UserRepository implements AuthBase {
     }
   }
 
-
-
   @override
   Future<bool> signOut() async {
     if (appMode == AppMode.DEBUG) {
@@ -50,18 +49,19 @@ class UserRepository implements AuthBase {
     }
   }
 
-
   @override
   Future<MyUser> createUserWithSignInWithEmail(
-      String email, String sifre,String interest) async {
+      String email, String sifre, String interest) async {
     if (appMode == AppMode.DEBUG) {
-      return await _fakeAuthService.createUserWithSignInWithEmail(email, sifre,interest);
+      return await _fakeAuthService.createUserWithSignInWithEmail(
+          email, sifre, interest);
     } else {
       MyUser _user = await _firebaseAuthService.createUserWithSignInWithEmail(
-          email, sifre,interest);
+          email, sifre, interest);
       print("$interest in repo");
       //return _user;
-      bool _sonuc = await _firestoreDBService.saveUserWithEmailAndPassword(_user,interest);
+      bool _sonuc = await _firestoreDBService.saveUserWithEmailAndPassword(
+          _user, interest);
       if (_sonuc) {
         return await _firestoreDBService.readUser(_user.userID);
       } else {
@@ -76,7 +76,7 @@ class UserRepository implements AuthBase {
       return await _fakeAuthService.signInWithEmailAndPassword(email, sifre);
     } else {
       MyUser _user =
-      await _firebaseAuthService.signInWithEmailAndPassword(email, sifre);
+          await _firebaseAuthService.signInWithEmailAndPassword(email, sifre);
 
 //return _user;
       return await _firestoreDBService.readUser(_user.userID);
@@ -88,7 +88,8 @@ class UserRepository implements AuthBase {
     if (appMode == AppMode.DEBUG) {
       return false;
     } else {
-      return await _firestoreDBService.updateUserName(degisecekUserID, yeniUserName);
+      return await _firestoreDBService.updateUserName(
+          degisecekUserID, yeniUserName);
     }
   }
 
@@ -106,7 +107,31 @@ class UserRepository implements AuthBase {
     }
   }
 
-  /* Future<List<User>> getAllUsers() async {
+  Future<bool> updateInterest(String userID, String newInterest) async {
+    if (appMode == AppMode.DEBUG) {
+      return false;
+    } else {
+      return await _firestoreDBService.updateInterest(userID, newInterest);
+    }
+  }
+
+  Future<List<Club>> getAllClubs() async {
+    if (appMode == AppMode.DEBUG) {
+      return [];
+    } else {
+      //DateTime _zaman = await _firestoreDBService.saatiGoster(userID);
+
+      // return await _firestoreDBService.getAllConversations(userID);
+      var klupListesi =
+      await _firestoreDBService.getAllClubs();
+
+      return klupListesi;
+    }
+  }
+
+
+
+/* Future<List<User>> getAllUsers() async {
     if (appMode == AppMode.DEBUG) {
       return [];
     } else {

@@ -1,5 +1,6 @@
 
 
+import 'package:campusapp/model/club.dart';
 import 'package:campusapp/model/user.dart';
 import 'package:campusapp/service/db_base.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -71,6 +72,35 @@ class FirestoreDBService implements DBBase {
         .doc(userID)
         .update({"profilURL": profilPhotoUrl});
     return true;
+  }
+  @override
+  Future<bool> updateInterest(String userID, String newInterest) async{
+    await _firestoreDb
+        .collection("users")
+        .doc(userID)
+        .update({"interest": newInterest});
+    return true;
+
+  }
+
+
+  @override
+  Future<List<Club>> getAllClubs() async {
+    QuerySnapshot querySnapshot = await _firestoreDb
+        .collection("clubs")
+        .get();
+
+    List<Club> tumKlupler = [];
+
+
+    for (DocumentSnapshot tekKlub in querySnapshot.docs) {
+      Club _tekClub = Club.fromJson(tekKlub.data());
+      tumKlupler.add(_tekClub);
+     // test = ;
+     // print("tek konusma  -----------> + ");
+     // print(_tekClub.name);
+    }
+    return tumKlupler;
   }
 
 /*

@@ -1,3 +1,4 @@
+
 import 'dart:io';
 
 import 'package:campusapp/custom_utils/check_box_list_model.dart';
@@ -17,10 +18,11 @@ class _ProfilePageState extends State<ProfilePage> {
   List<CheckBoxListTileModel> checkBoxListTileModel =
       CheckBoxListTileModel.getUsers();
   TextEditingController _controllerUserName;
+ // String testInterest;
+  String newInterest = "";
 
   File _profilPhoto;
   final ImagePicker _picker = ImagePicker();
-
 
   @override
   void initState() {
@@ -35,8 +37,8 @@ class _ProfilePageState extends State<ProfilePage> {
     super.dispose();
   }
 
-
   Future _cikisIcinOnayIste(BuildContext context) async {
+
     final sonuc = await PlatformDuyarliAlertDialog(
             baslik: "Çıkış",
             icerik: "Çıkış Yapmak İstediğinizden Emin Misiniz?",
@@ -82,7 +84,9 @@ class _ProfilePageState extends State<ProfilePage> {
   Widget build(BuildContext context) {
     UserModel _userModel = Provider.of<UserModel>(context, listen: false);
     _controllerUserName.text = _userModel.user.userName;
-
+   // print(_userModel.user.interest);
+   // print("interests");
+    _fillInterests();
 
     return Scaffold(
       appBar: AppBar(
@@ -244,7 +248,7 @@ class _ProfilePageState extends State<ProfilePage> {
                             controller: _controllerUserName,
                             maxLines: 1,
                             //controller: _controllerUserName,
-                            initialValue: _userModel.user.userName,
+                            //initialValue: _userModel.user.userName,
                             decoration: InputDecoration(
                               labelText: " Kullanıcı Adı ...",
                               border: InputBorder.none,
@@ -506,9 +510,19 @@ class _ProfilePageState extends State<ProfilePage> {
   void _profilPhotoVeUserNameGuncelle(BuildContext context) async {
     final _userModel = Provider.of<UserModel>(context, listen: false);
     bool result = true;
-    print("user model name "+_userModel.user.userName);
-    print("controller text name "+_controllerUserName.text);
+
+    //print("user model name "+_userModel.user.userName);
+    //  print("controller text name "+_controllerUserName.text);
+    newInterest="";
+    _checkInterests();
+    print("interest $newInterest ");
     try {
+
+      if(newInterest !="")
+        {
+        var result =  await _userModel.updateInterest(
+              _userModel.user.userID,newInterest);
+        }
       if (_profilPhoto != null) {
         // upload yapılır
         var url = await _userModel.uploadFile(
@@ -524,12 +538,10 @@ class _ProfilePageState extends State<ProfilePage> {
           print("Kullanıcı Adı değiştirildi" + _userModel.user.userName);
         } else {
           result = false;
-          print("modeldeki user name" + _userModel.user.userName);
-          print("controller daki user name" + _controllerUserName.text);
-          print(
-              "Kullanıcı Adı kullanımda.Lütfen başka kullanıcı adı deneyiniz");
+
         }
       }
+
     } catch (e) {} finally {
       if (result) {
         PlatformDuyarliAlertDialog(
@@ -550,9 +562,45 @@ class _ProfilePageState extends State<ProfilePage> {
 
   void itemChange(bool val, int index) {
     //List<int> interestList;
-
+//print("$val  va ve $index index");
     setState(() {
       checkBoxListTileModel[index].isCheck = val;
     });
+  }
+
+  void _fillInterests() {
+    UserModel _userModel = Provider.of<UserModel>(context, listen: false);
+    String _interest = _userModel.user.interest;
+   // testInterest="";
+
+    List<int> intersestList = [];
+    List<String> interestStringList = [];
+
+    interestStringList = _interest.split("");
+    intersestList = interestStringList.map(int.parse).toList();
+
+    for (int i = 0; i < 4; i++) {
+      if (intersestList.contains(i)) {
+        itemChange(true, i);
+       // print("interest $i true oldu");
+      }
+      else{
+       // itemChange(false, i);
+      }
+    }
+  //  testInterest= utf8.decode(intersestList);
+   // testInterest = testInterest.join(intersestList.map((i) => i.toString()), "");
+    //testInterest= String.fromCharCodes(intersestList);
+   // print("$testInterest test interest");
+   // _userModel.user.interest = test;
+  }
+
+  void _checkInterests() {
+
+    for (int i = 0; i < 4; i++) {
+      if(checkBoxListTileModel[i].isCheck)
+        newInterest = newInterest + i.toString();
+
+    }
   }
 }
