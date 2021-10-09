@@ -129,6 +129,21 @@ class UserRepository implements AuthBase {
     }
   }
 
+  Future<List<Club>> getOfferedClubs(String interests) async {
+    if (appMode == AppMode.DEBUG) {
+      return [];
+    } else {
+      //DateTime _zaman = await _firestoreDBService.saatiGoster(userID);
+     // print("$interests interest in repo");
+      // return await _firestoreDBService.getAllConversations(userID);
+      var klupListesi =
+      await _firestoreDBService.getOfferedClubs(interests);
+
+      return klupListesi;
+    }
+  }
+
+
 
 
 /* Future<List<User>> getAllUsers() async {

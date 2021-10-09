@@ -343,7 +343,7 @@ class _ProfilePageState extends State<ProfilePage> {
                 2,
                 Container(
                   width: double.infinity,
-                  height: 290,
+                  height: 50,
                   //color: Colors.purple.shade50,
                   decoration: const BoxDecoration(
                     // color: Colors.blueGrey,
@@ -354,7 +354,7 @@ class _ProfilePageState extends State<ProfilePage> {
                       bottomRight: Radius.circular(50),
                     ),
                   ),
-                  child: new ListView.builder(
+                  child: Container(), /*new ListView.builder(
                     physics: NeverScrollableScrollPhysics(),
                     itemCount: checkBoxListTileModel.length,
                     itemBuilder: (BuildContext context, int index) {
@@ -393,7 +393,7 @@ class _ProfilePageState extends State<ProfilePage> {
                         ),
                       );
                     },
-                  ),
+                  ),*/
                 ),
               ),
               FadeAnimation(
@@ -411,7 +411,7 @@ class _ProfilePageState extends State<ProfilePage> {
                 2,
                 Container(
                   width: double.infinity,
-                  height: 290,
+                  height: 50,
                   //color: Colors.purple.shade50,
                   decoration: const BoxDecoration(
                     // color: Colors.blueGrey,
@@ -422,7 +422,7 @@ class _ProfilePageState extends State<ProfilePage> {
                       bottomRight: Radius.circular(50),
                     ),
                   ),
-                  child: new ListView.builder(
+                  child: Container(),/*new ListView.builder(
                     physics: NeverScrollableScrollPhysics(),
                     itemCount: checkBoxListTileModel.length,
                     itemBuilder: (BuildContext context, int index) {
@@ -461,7 +461,7 @@ class _ProfilePageState extends State<ProfilePage> {
                         ),
                       );
                     },
-                  ),
+                  ),*/
                 ),
               ),
               FadeAnimation(

@@ -49,8 +49,8 @@ class _MyCustomBottomNavigatorState extends State<MyCustomBottomNavigator> {
         child: CupertinoTabScaffold(
           tabBar: CupertinoTabBar(
             items: [
-              _navItemOlustur(TabItem.Kullanicilar),
-              _navItemOlustur(TabItem.Konusmalarim),
+              _navItemOlustur(TabItem.Oneri),
+              _navItemOlustur(TabItem.Kategoriler),
               _navItemOlustur(TabItem.Profil),
             ],
             onTap: (index) => widget.onSelectedTab(TabItem.values[index]),

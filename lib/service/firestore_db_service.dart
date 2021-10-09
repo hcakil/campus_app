@@ -103,6 +103,41 @@ class FirestoreDBService implements DBBase {
     return tumKlupler;
   }
 
+  @override
+  Future<List<Club>> getOfferedClubs(String interests) async {
+
+    List<String> interestStringList = [];
+    interestStringList = interests.split("");
+    //print("$interests interest in firestoredb-----");
+    //print(interestStringList);
+
+    QuerySnapshot querySnapshot = await _firestoreDb
+        .collection("clubs")
+        .where("interest", whereIn: interestStringList)
+        .get();
+
+    //print(querySnapshot.size);
+    //print("size query");
+
+    List<Club> tumKlupler = [];
+
+
+    for (DocumentSnapshot tekKlub in querySnapshot.docs) {
+      Club _tekClub = Club.fromJson(tekKlub.data());
+      tumKlupler.add(_tekClub);
+      // test = ;
+      // print("tek konusma  -----------> + ");
+      // print(_tekClub.name);
+    }
+    return tumKlupler;
+  }
+
+
+
+
+
+
+
 /*
   @override
   Future<List<User>> getAllUser() async {

@@ -1,13 +1,14 @@
 import 'package:campusapp/custom_utils/my_custom_navi.dart';
 import 'package:campusapp/custom_utils/tab_items.dart';
 import 'package:campusapp/model/user.dart';
+import 'package:campusapp/pages/all_categories_page.dart';
 import 'package:campusapp/pages/category_offers_page.dart';
 import 'package:campusapp/pages/profil_page.dart';
 import 'package:campusapp/view_model/user_model.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-import 'all_categories_page.dart';
+
 
 class HomePage2 extends StatefulWidget {
   final MyUser user;
@@ -21,21 +22,21 @@ class HomePage2 extends StatefulWidget {
 class _HomePage2State extends State<HomePage2> {
 
 
-  TabItem _currentTab = TabItem.Kullanicilar;
+  TabItem _currentTab = TabItem.Kategoriler;
 
   Map<TabItem, GlobalKey<NavigatorState>> navigatorKeys = {
-    TabItem.Kullanicilar: GlobalKey<NavigatorState>(),
+    TabItem.Oneri: GlobalKey<NavigatorState>(),
     TabItem.Profil: GlobalKey<NavigatorState>(),
-    TabItem.Konusmalarim: GlobalKey<NavigatorState>(),
+    TabItem.Kategoriler: GlobalKey<NavigatorState>(),
   };
 
   Map<TabItem, Widget> tumSayfalar() {
     return {
-      TabItem.Kullanicilar: ChangeNotifierProvider(
+      TabItem.Kategoriler: ChangeNotifierProvider(
         create: (context) => UserModel(),
-        child: CategoryOffersPage(),//KullanicilarPage(),
+        child: AllCategoryPage(),//KullanicilarPage(),AllCategoryPage
       ),
-      TabItem.Konusmalarim: AllCategoryPage(),//KonusmalarimPage(),
+      TabItem.Oneri: CategoryOffersPage(),//KonusmalarimPage(),
       TabItem.Profil: ProfilePage(),////ProfilPage(),
     };
   }

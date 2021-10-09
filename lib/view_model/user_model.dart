@@ -148,6 +148,11 @@ print("e mail şifre kontrole geşdi  -->"+email + "  "+sifre);
   Future<List<Club>> getAllClubs() async {
     return await _userRepository.getAllClubs();
   }
+  Future<List<Club>> getOfferedClubs(String intests) async {
+   // print("$intests interest in model");
+    return await _userRepository.getOfferedClubs(intests);
+  }
+
 
 /*Future<List<MyUser>> getUserWithPagination(
       MyUser enSonGetirilenUser, int getirilecekElemanSayisi) async {
