@@ -1,5 +1,6 @@
 import 'package:campusapp/custom_utils/fade_animation.dart';
 import 'package:campusapp/model/club.dart';
+import 'package:campusapp/pages/add_category_page.dart';
 import 'package:campusapp/view_model/user_model.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -10,11 +11,21 @@ class CategoryOffersPage extends StatefulWidget {
 }
 
 class _CategoryOffersPageState extends State<CategoryOffersPage> {
+
+  bool _shouldHideAction;
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    _shouldHideAction = true;
+  }
   @override
   Widget build(BuildContext context) {
     UserModel _userModel = Provider.of<UserModel>(context);
-    // print("interests of usermodel");
-    // print(_userModel.user.interest);
+    if(_userModel.user.seviye != null && _userModel.user.seviye == 2 )
+      _shouldHideAction = false;
+    // print("seviye of usermodel");
+     //print(_userModel.user.seviye);
 
     return  Scaffold(
       appBar: AppBar(
@@ -41,6 +52,75 @@ class _CategoryOffersPageState extends State<CategoryOffersPage> {
             ),
           ],
         ),
+          actions: _shouldHideAction ? [] : [
+            Theme(
+              data: Theme.of(context).copyWith(
+                  textTheme: TextTheme().apply(bodyColor: Colors.black),
+                  dividerColor: Colors.white,
+                  iconTheme: IconThemeData(color: Colors.white)),
+              child: PopupMenuButton<int>(
+                color:Colors.blueAccent,
+                itemBuilder: (context) => [
+                  PopupMenuItem<int>(value: 0, child: Row(
+
+                    children: [
+                      Icon(
+                        Icons.category,
+                        color: Colors.white,
+                      ),
+                      const SizedBox(
+                        width: 7,
+                      ),
+                      Text("Add Category"),
+                    ],
+                  )),
+                  PopupMenuItem<int>(
+                      value: 1, child: Row(
+                        children: [
+                          Icon(
+                            Icons.local_activity,
+                            color: Colors.white,
+                          ),
+                          const SizedBox(
+                            width: 7,
+                          ),
+                          Text("Add Activity"),
+                        ],
+                      )),
+                  PopupMenuDivider(),
+                  PopupMenuItem<int>(
+                      value: 2,
+                      child: Row(
+                        children: [
+                          Icon(
+                            Icons.local_activity_rounded,
+                            color: Colors.red,
+                          ),
+                          const SizedBox(
+                            width: 7,
+                          ),
+                          Text("Waiting Activity Requests")
+                        ],
+                      )),
+                  PopupMenuItem<int>(
+                      value: 3,
+                      child: Row(
+                        children: [
+                          Icon(
+                            Icons.category_rounded,
+                            color: Colors.red,
+                          ),
+                          const SizedBox(
+                            width: 7,
+                          ),
+                          Text("Waiting Club Requests")
+                        ],
+                      )),
+                ],
+                onSelected: (item) => SelectedItem(context, item),
+              ),
+            ),
+          ]
       ),
       body: FutureBuilder<List<Club>>(
         future: _userModel.getOfferedClubs(_userModel.user.interest),
@@ -162,7 +242,7 @@ class _CategoryOffersPageState extends State<CategoryOffersPage> {
                               size: 80,
                             ),
                             Text(
-                              "Henüz Önerilen Klüb Yok",
+                              "Henüz Önerilen Klüp Yok",
                               style: TextStyle(fontSize: 26),
                             ),
                           ]),
@@ -183,5 +263,26 @@ class _CategoryOffersPageState extends State<CategoryOffersPage> {
     await Future.delayed(Duration(seconds: 1));
 
     return null;
+  }
+  SelectedItem(BuildContext context, int item) {
+    switch (item) {
+      case 0:
+        print("Add Category Clicked");
+         Navigator.of(context)
+            .push(MaterialPageRoute(builder: (context) => AddCategoryPage()));
+        break;
+      case 1:
+        print("Add Activity Clicked");
+        break;
+      case 2:
+        print("Waiting Activity Request Clicked");
+        /* Navigator.of(context).pushAndRemoveUntil(
+            MaterialPageRoute(builder: (context) => LoginPage()),
+                (route) => false);*/
+        break;
+      case 3:
+        print("Waiting Club Request Clicked");
+        break;
+    }
   }
 }

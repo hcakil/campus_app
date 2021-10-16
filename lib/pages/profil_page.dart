@@ -535,7 +535,7 @@ class _ProfilePageState extends State<ProfilePage> {
         if (updateResult == true) {
           _userModel.user.userName = _controllerUserName.text;
 
-          print("Kullanıcı Adı değiştirildi" + _userModel.user.userName);
+          //print("Kullanıcı Adı değiştirildi" + _userModel.user.userName);
         } else {
           result = false;
 
@@ -547,6 +547,8 @@ class _ProfilePageState extends State<ProfilePage> {
         PlatformDuyarliAlertDialog(
           baslik: "Uyarı",
           icerik: "Bilgileriniz Güncellenmiştir.",
+            anaButonYazisi: "Tamam",
+           // iptalButonYazisi: "Vazgeç"
         ).goster(context);
       } else {
         PlatformDuyarliAlertDialog(

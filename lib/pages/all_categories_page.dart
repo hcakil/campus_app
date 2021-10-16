@@ -10,9 +10,11 @@ class AllCategoryPage extends StatefulWidget {
 }
 
 class _AllCategoryPageState extends State<AllCategoryPage> {
+
   @override
   Widget build(BuildContext context) {
     UserModel _userModel = Provider.of<UserModel>(context);
+
     return Scaffold(
       appBar: AppBar(
         toolbarHeight: 100,
@@ -38,6 +40,7 @@ class _AllCategoryPageState extends State<AllCategoryPage> {
             ),
           ],
         ),
+
       ),
       body: FutureBuilder<List<Club>>(
         future: _userModel.getAllClubs(),
@@ -120,9 +123,13 @@ class _AllCategoryPageState extends State<AllCategoryPage> {
                                 mainAxisSize: MainAxisSize.min,
                                 children: [
                                   InkWell(onTap: (){},
-                                      child: Container(
-                                          child: Image.asset(
-                                              "assets/images/attendance.png"))),
+                                      child: Tooltip(
+                                        message: "Kayıt olmak için tıklayiniz",
+                                        child: Container(
+
+                                            child: Image.asset(
+                                                "assets/images/attendance.png")),
+                                      )),
                                   // Icon(Icons.add_box,size: 30,),
                                   SizedBox(
                                     width: 15,
@@ -179,4 +186,6 @@ class _AllCategoryPageState extends State<AllCategoryPage> {
 
     return null;
   }
+
+
 }

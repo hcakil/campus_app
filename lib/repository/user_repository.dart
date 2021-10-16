@@ -143,6 +143,36 @@ class UserRepository implements AuthBase {
     }
   }
 
+  Future<String>  uploadCategoryFile(String clubId, String fileType, File clubPhoto) async{
+    if (appMode == AppMode.DEBUG) {
+      return "dosya indirme linki";
+    } else {
+      var categoryPhotoUrl = await _firestoreStorageService.uploadCategoryFile(
+          clubId, fileType, clubPhoto);
+
+      await _firestoreDBService.updateCategoryPhoto(clubId, categoryPhotoUrl);
+
+      return categoryPhotoUrl;
+    }
+
+  }
+
+  @override
+  Future<Club>  createClub(Club club) async {
+
+
+    //return _user;
+    bool _sonuc = await _firestoreDBService.createClub(
+        club);
+    print("$_sonuc in repo");
+
+    if (_sonuc) {
+      return await _firestoreDBService.readClub(club.id);
+    } else {
+      return null;
+    }
+  }
+
 
 
 

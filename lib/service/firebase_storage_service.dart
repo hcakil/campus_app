@@ -25,4 +25,23 @@ class FirebaseStorageService implements StorageBase {
 
     return url;
   }
+
+  @override
+  Future<String> uploadCategoryFile(String clubId, String fileType, File clubPhoto) async{
+
+    _storageReference = firebase_storage.FirebaseStorage.instance
+        .ref()
+        .child(clubId)
+        .child(fileType)
+        .child("club_photo.png");
+
+    firebase_storage.UploadTask uploadTask =
+    _storageReference.putFile(clubPhoto);
+    firebase_storage.TaskSnapshot snapshot = await uploadTask;
+
+    var url = await _storageReference.getDownloadURL();
+
+    return url;
+
+  }
 }

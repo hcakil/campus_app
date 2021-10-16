@@ -13,6 +13,7 @@ class UserModel with ChangeNotifier implements AuthBase {
   ViewState _state = ViewState.Idle;
   UserRepository _userRepository = locator<UserRepository>();
   MyUser _user;
+  Club _club;
   String emailHataMesaji;
   String sifreHataMesaji;
 
@@ -151,6 +152,31 @@ print("e mail şifre kontrole geşdi  -->"+email + "  "+sifre);
   Future<List<Club>> getOfferedClubs(String intests) async {
    // print("$intests interest in model");
     return await _userRepository.getOfferedClubs(intests);
+  }
+
+  Future<String> uploadCategoryFile(String clubId, String fileType, File clubPhoto) async{
+    try {
+      var indirmeLinki =
+      await _userRepository.uploadCategoryFile(clubId, fileType, clubPhoto);
+      return indirmeLinki;
+    }
+    finally{
+      state = ViewState.Idle;
+    }
+  }
+
+  @override
+  Future<Club>  addClub(Club club) async {
+try {
+  state = ViewState.Busy;
+  _club = await _userRepository.createClub(
+      club);
+  return _club;
+}finally{
+ // state = ViewState.Idle;
+}
+
+
   }
 
 

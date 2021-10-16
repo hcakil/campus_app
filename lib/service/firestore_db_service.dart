@@ -132,6 +132,44 @@ class FirestoreDBService implements DBBase {
     return tumKlupler;
   }
 
+  @override
+  Future<bool>  updateCategoryPhoto(String clubId, String categoryPhotoUrl) async{
+    await _firestoreDb
+        .collection("clubs")
+        .doc(clubId)
+        .update({"photoUrl": categoryPhotoUrl});
+    return true;
+  }
+
+  @override
+  Future<bool>  createClub(Club club) async{
+
+    DocumentSnapshot _okunanClub =
+    await FirebaseFirestore.instance.doc("clubs/${club.id}").get();
+
+    if (_okunanClub.data() == null) {
+      print("nullll");
+      print(_okunanClub.toString());
+      await _firestoreDb.collection("clubs").doc(club.id).set(club.toJson());
+      return true;
+    } else {
+      return true;
+    }
+  }
+
+
+  @override
+  Future<Club> readClub(String id) async{
+    DocumentSnapshot _okunanClub =
+        await _firestoreDb.collection("clubs").doc(id).get();
+
+    Map<String, dynamic> _okunanClubBilgileriMap = _okunanClub.data();
+
+    Club _okunanClubNesnesi = Club.fromJson(_okunanClubBilgileriMap);
+    print("okuunan club nesnesi" + _okunanClubNesnesi.toString());
+    return _okunanClubNesnesi;
+  }
+
 
 
 
