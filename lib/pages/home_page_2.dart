@@ -49,11 +49,18 @@ class _HomePage2State extends State<HomePage2> {
         navigatorKeys: navigatorKeys,
         sayfaOlusturucu: tumSayfalar(),
         currentTab: _currentTab,
-        onSelectedTab: (secilenTab) {
+        onSelectedTab: (secilenTab) async{
           if (secilenTab == _currentTab) {
-            navigatorKeys[_currentTab]
-                .currentState
-                .popUntil((route) => route.isFirst);
+
+          print("secilen tab $secilenTab");
+         //if(secilenTab == )
+          //if(secilenTab == "")
+          await Future.delayed(Duration(milliseconds: 500));
+            navigatorKeys[secilenTab].currentState.popUntil((route) {
+              return route.isFirst;
+            }
+
+            );
           } else {
             setState(() {
               _currentTab = secilenTab;

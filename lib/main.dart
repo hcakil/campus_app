@@ -1,5 +1,4 @@
 import 'package:campusapp/locator.dart';
-import 'package:campusapp/pages/home_page.dart';
 import 'package:campusapp/pages/landing_page.dart';
 import 'package:campusapp/view_model/user_model.dart';
 import 'package:firebase_core/firebase_core.dart';

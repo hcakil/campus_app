@@ -187,7 +187,7 @@ class _AddCategoryPageState extends State<AddCategoryPage> {
                       ],
                     )),
               ],
-              onSelected: (item) => SelectedItem(context, item),
+              onSelected: (item) => selectedItem(context, item),
             ),
           ),
         ],
@@ -270,7 +270,7 @@ class _AddCategoryPageState extends State<AddCategoryPage> {
                                         image: DecorationImage(
                                             image: _clubPhoto == null
                                                 ? NetworkImage(
-                                                    "https://digitalpratix.com/wp-content/uploads/club_image.jpg")
+                                                    "https://digitalpratix.com/wp-content/uploads/resimsec.png")
                                                 : FileImage(_clubPhoto),
                                             fit: BoxFit.fill),
                                       ),
@@ -515,7 +515,7 @@ class _AddCategoryPageState extends State<AddCategoryPage> {
                           height: 50,
                           alignment: Alignment.center,
                           child: const Text(
-                            'Add Club',
+                            'Ekle',
                             style: TextStyle(
                               fontSize: 30,
                               color: Colors.white,
@@ -564,7 +564,7 @@ class _AddCategoryPageState extends State<AddCategoryPage> {
     }
   }
 
-  SelectedItem(BuildContext context, int item) {
+  selectedItem(BuildContext context, int item) {
     switch (item) {
       case 0:
         print("Add Category Clicked");

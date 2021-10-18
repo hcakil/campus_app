@@ -343,7 +343,7 @@ class _ProfilePageState extends State<ProfilePage> {
                 2,
                 Container(
                   width: double.infinity,
-                  height: 50,
+                  height: 180,
                   //color: Colors.purple.shade50,
                   decoration: const BoxDecoration(
                     // color: Colors.blueGrey,
@@ -354,46 +354,114 @@ class _ProfilePageState extends State<ProfilePage> {
                       bottomRight: Radius.circular(50),
                     ),
                   ),
-                  child: Container(), /*new ListView.builder(
-                    physics: NeverScrollableScrollPhysics(),
-                    itemCount: checkBoxListTileModel.length,
-                    itemBuilder: (BuildContext context, int index) {
-                      return new Card(
-                        shadowColor: Colors.purpleAccent,
-                        child: new Container(
-                          width: 150,
-                          child: Column(
-                            children: <Widget>[
-                              new CheckboxListTile(
-                                  activeColor: Colors.pink[300],
-                                  dense: true,
-                                  //font change
-                                  title: new Text(
-                                    checkBoxListTileModel[index].title,
-                                    style: TextStyle(
-                                      fontSize: 18,
-                                      fontFamily: "Lobster",
-                                      fontWeight: FontWeight.normal,
+                  child: FutureBuilder(
+                    future: _userModel.getAllApprovalClubRequests(_userModel.user.userID),
+                      builder: (context, klubListesi){
+                        if (!klubListesi.hasData) {
+                          return Center(
+                            child: Text("Kayıtlı Klüp Yok",style: TextStyle(
+
+                                fontSize: 20,
+                                color: Colors.red,
+                                fontWeight: FontWeight.bold,
+                                letterSpacing: 2,
+                                fontFamily: "OpenSans"
+
+                            ),),
+                          );
+                        }else {
+                          var tumKlupler = klubListesi.data;
+                          if (tumKlupler.length > 0){
+                            return ListView.builder(
+                              itemCount: tumKlupler.length,
+                              itemBuilder: (context, index) {
+
+                                var oAnkiKlup = tumKlupler[index];
+                                return GestureDetector(
+                                  onTap: () {
+                                    print("category name");
+                                    print(oAnkiKlup.clubName);
+
+                                  },
+                                  child: FadeAnimation(
+                                    2,
+                                    Container(
+                                      width: double.infinity,
+                                      height: 50,
+                                      margin: const EdgeInsets.symmetric(
+                                          horizontal: 5, vertical: 5),
+                                      padding: const EdgeInsets.symmetric(
+                                          horizontal: 5, vertical: 0),
+                                      decoration: BoxDecoration(
+                                          border: Border.all(
+                                              color: Colors.blueGrey, width: 1),
+                                          boxShadow: const [
+                                            BoxShadow(
+                                                color: Colors.blueGrey,
+                                                blurRadius: 10,
+                                                offset: Offset(1, 1)),
+                                          ],
+                                          color: Colors.blueGrey.shade50,
+                                          borderRadius:
+                                          const BorderRadius.all(Radius.circular(20))),
+                                      child: Container(
+                                          child: ListTile(
+                                            title: Text(oAnkiKlup.clubName,
+                                                style: TextStyle(
+                                                    fontSize: 20,
+                                                    color: Colors.red,
+                                                    fontWeight: FontWeight.bold,
+                                                    letterSpacing: 2,
+                                                    fontFamily: "OpenSans")),
+
+
+                                            trailing: Row(
+                                              mainAxisSize: MainAxisSize.min,
+                                              children: [
+                                                InkWell(
+                                                  onTap: ()  {
+
+                                                    print("bilgi sayfasına git");
+
+
+
+                                                  },
+                                                  child: Container(
+                                                    height: 40,
+                                                    child: Image.asset(
+                                                        "assets/images/info.png"),
+                                                  ),
+                                                ),
+                                                // Icon(Icons.add_box,size: 30,),
+                                                SizedBox(
+                                                  width: 5,
+                                                ),
+
+                                              ],
+                                            ), //Text(oAnkiUser.aradakiFark),
+                                          )
+                                      ),
                                     ),
                                   ),
-                                  value: checkBoxListTileModel[index].isCheck,
-                                  secondary: Container(
-                                    height: 50,
-                                    width: 50,
-                                    child: Image.asset(
-                                      checkBoxListTileModel[index].img,
-                                      fit: BoxFit.cover,
-                                    ),
-                                  ),
-                                  onChanged: (bool val) {
-                                    itemChange(val, index);
-                                  })
-                            ],
-                          ),
-                        ),
-                      );
-                    },
-                  ),*/
+                                );
+                              },
+                            );
+                          }
+                          else return Center(
+                            child: Text("Kayıtlı Klüp Yok",style: TextStyle(
+
+                                fontSize: 20,
+                                color: Colors.red,
+                                fontWeight: FontWeight.bold,
+                                letterSpacing: 2,
+                                fontFamily: "OpenSans"
+
+                            ),),
+                          );
+
+                        }
+                      }
+                  ),
                 ),
               ),
               FadeAnimation(

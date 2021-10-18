@@ -1,4 +1,3 @@
-import 'dart:io';
 
 import 'package:campusapp/custom_utils/check_box_list_model.dart';
 import 'package:campusapp/custom_utils/exceptions.dart';

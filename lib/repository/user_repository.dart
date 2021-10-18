@@ -2,6 +2,7 @@ import 'dart:io';
 
 import 'package:campusapp/locator.dart';
 import 'package:campusapp/model/club.dart';
+import 'package:campusapp/model/clubRequest.dart';
 import 'package:campusapp/model/user.dart';
 import 'package:campusapp/service/auth_base.dart';
 import 'package:campusapp/service/fake_auth_service.dart';
@@ -16,12 +17,11 @@ enum AppMode { DEBUG, RELEASE }
 class UserRepository implements AuthBase {
   FirebaseAuthService _firebaseAuthService = locator<FirebaseAuthService>();
   FakeAuthenticationService _fakeAuthService =
-      locator<FakeAuthenticationService>();
+  locator<FakeAuthenticationService>();
   FirestoreDBService _firestoreDBService = locator<FirestoreDBService>();
   FirebaseStorageService _firestoreStorageService =
-      locator<FirebaseStorageService>();
+  locator<FirebaseStorageService>();
 
-/**/
 
   AppMode appMode = AppMode.RELEASE;
   List<MyUser> tumKullaniciListesi = [];
@@ -50,8 +50,8 @@ class UserRepository implements AuthBase {
   }
 
   @override
-  Future<MyUser> createUserWithSignInWithEmail(
-      String email, String sifre, String interest) async {
+  Future<MyUser> createUserWithSignInWithEmail(String email, String sifre,
+      String interest) async {
     if (appMode == AppMode.DEBUG) {
       return await _fakeAuthService.createUserWithSignInWithEmail(
           email, sifre, interest);
@@ -76,15 +76,15 @@ class UserRepository implements AuthBase {
       return await _fakeAuthService.signInWithEmailAndPassword(email, sifre);
     } else {
       MyUser _user =
-          await _firebaseAuthService.signInWithEmailAndPassword(email, sifre);
+      await _firebaseAuthService.signInWithEmailAndPassword(email, sifre);
 
 //return _user;
       return await _firestoreDBService.readUser(_user.userID);
     }
   }
 
-  Future<bool> updateUserName(
-      String degisecekUserID, String yeniUserName) async {
+  Future<bool> updateUserName(String degisecekUserID,
+      String yeniUserName) async {
     if (appMode == AppMode.DEBUG) {
       return false;
     } else {
@@ -93,8 +93,8 @@ class UserRepository implements AuthBase {
     }
   }
 
-  Future<String> uploadFile(
-      String userID, String fileType, File profilPhoto) async {
+  Future<String> uploadFile(String userID, String fileType,
+      File profilPhoto) async {
     if (appMode == AppMode.DEBUG) {
       return "dosya indirme linki";
     } else {
@@ -134,7 +134,7 @@ class UserRepository implements AuthBase {
       return [];
     } else {
       //DateTime _zaman = await _firestoreDBService.saatiGoster(userID);
-     // print("$interests interest in repo");
+      // print("$interests interest in repo");
       // return await _firestoreDBService.getAllConversations(userID);
       var klupListesi =
       await _firestoreDBService.getOfferedClubs(interests);
@@ -143,7 +143,8 @@ class UserRepository implements AuthBase {
     }
   }
 
-  Future<String>  uploadCategoryFile(String clubId, String fileType, File clubPhoto) async{
+  Future<String> uploadCategoryFile(String clubId, String fileType,
+      File clubPhoto) async {
     if (appMode == AppMode.DEBUG) {
       return "dosya indirme linki";
     } else {
@@ -154,13 +155,10 @@ class UserRepository implements AuthBase {
 
       return categoryPhotoUrl;
     }
-
   }
 
   @override
-  Future<Club>  createClub(Club club) async {
-
-
+  Future<Club> createClub(Club club) async {
     //return _user;
     bool _sonuc = await _firestoreDBService.createClub(
         club);
@@ -173,7 +171,76 @@ class UserRepository implements AuthBase {
     }
   }
 
+  Future<String> addRequestForClub(ClubRequest clubRequest) async {
 
+   // print(" repo  -->club id  and user id ");
+    print(clubRequest.clubName);
+    ClubRequest _sonuc = await _firestoreDBService.checkClubRequest(
+        clubRequest.clubId, clubRequest.userId);
+
+   // print("$_sonuc in repo");
+    if (_sonuc == null) {
+      print("Klüp isteği yoktu eklenecek");
+      var eklemeSonucu = await _firestoreDBService.addClubAttendantRequest(
+          ClubRequest(clubId: clubRequest.clubId,userId: clubRequest.userId,
+              status: "Waiting",userName: clubRequest.userName,
+          clubName: clubRequest.clubName,userPhotoUrl: clubRequest.userPhotoUrl));
+      if (eklemeSonucu)
+        return "Added";
+      else
+        return "Hata";
+    } else {
+      print("KLÜP İSTEĞİ VAR VE DURUMU KONTROL EDİLECEK");
+      return _sonuc.status;
+    }
+  }
+
+  Future<List<ClubRequest>> getAllClubRequests() async{
+    if (appMode == AppMode.DEBUG) {
+      return [];
+    } else {
+      //DateTime _zaman = await _firestoreDBService.saatiGoster(userID);
+
+      // return await _firestoreDBService.getAllConversations(userID);
+      var klupListesi =
+      await _firestoreDBService.getAllClubRequests();
+
+      return klupListesi;
+    }
+  }
+
+  Future<String> changeRequestTypeForClub(String type, ClubRequest clubRequest) async {
+    // print(" repo  -->club id  and user id ");
+    print(clubRequest.clubName);
+    print("type $type");
+   /* ClubRequest _sonuc = await _firestoreDBService.checkClubRequest(
+        clubRequest.clubId, clubRequest.userId);*/
+
+      var eklemeSonucu = await _firestoreDBService.changeRequestTypeForClub(
+          ClubRequest(clubId: clubRequest.clubId,userId: clubRequest.userId,
+              status: type,userName: clubRequest.userName,
+              clubName: clubRequest.clubName,userPhotoUrl: clubRequest.userPhotoUrl));
+      if (eklemeSonucu)
+        return type;
+      else
+        return "Hata";
+
+
+  }
+
+  Future<List<ClubRequest>>  getAllApprovalClubRequests(String userID) async{
+    if (appMode == AppMode.DEBUG) {
+      return [];
+    } else {
+      //DateTime _zaman = await _firestoreDBService.saatiGoster(userID);
+
+      // return await _firestoreDBService.getAllConversations(userID);
+      var klupListesi =
+      await _firestoreDBService.getAllApprovalClubRequests(userID);
+
+      return klupListesi;
+    }
+  }
 
 
 /* Future<List<User>> getAllUsers() async {

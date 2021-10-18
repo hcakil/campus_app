@@ -1,4 +1,5 @@
 import 'package:campusapp/custom_utils/fade_animation.dart';
+import 'package:campusapp/custom_utils/platform_duyarli_alert_dialog.dart';
 import 'package:campusapp/model/club.dart';
 import 'package:campusapp/view_model/user_model.dart';
 import 'package:flutter/material.dart';
@@ -10,6 +11,42 @@ class AllCategoryPage extends StatefulWidget {
 }
 
 class _AllCategoryPageState extends State<AllCategoryPage> {
+
+  String dialogString="İlk Katılma İsteğiniz Alınmıştır";
+
+  Future<String> _submitRequest(
+      String clubId,
+      String userId,
+      String clubName,
+      String userName,
+      String userProfileUrl,
+      BuildContext dialogContext) async {
+    // oAnkiKlup.name,_userModel.user.userName,_userModel.user.profilURL
+
+    print("id of a rewuested club -> $clubId  // user id --> $userId");
+    if (userId != null) {
+      final _userModel = Provider.of<UserModel>(context, listen: false);
+      try {
+        var sonuc = await _userModel.addRequestForClub(
+            clubId, userId, clubName, userName, userProfileUrl);
+        //var url = await _userModel.uploadCategoryFile(_clubId, "club_photo", _clubPhoto);
+        //print("sonuc --> $sonuc");
+        if (sonuc.contains("Waiting")) {
+          dialogString =
+          "İsteğiniz Onay İçin Beklemektedir Lütfen Daha Sonra Tekrar Deneyiniz !!";
+        } else if (sonuc.contains("Approved")) {
+          dialogString =
+          "İsteğiniz Onaylanmıştır Klüp Sayfasına Gitmek İstiyor musunuz?";
+        }
+        return sonuc;
+      } catch (e) {
+        print("-->HATA $e");
+
+      }
+    }
+  }
+
+
 
   @override
   Widget build(BuildContext context) {
@@ -122,14 +159,41 @@ class _AllCategoryPageState extends State<AllCategoryPage> {
                               trailing: Row(
                                 mainAxisSize: MainAxisSize.min,
                                 children: [
-                                  InkWell(onTap: (){},
-                                      child: Tooltip(
-                                        message: "Kayıt olmak için tıklayiniz",
-                                        child: Container(
+                                  InkWell(
+                                    onTap: () async {
+                                      print("Katılma İsteği geldi");
+                                      var result = await _submitRequest(
+                                          oAnkiKlup.id,
+                                          _userModel.user.userID,
+                                          oAnkiKlup.name,
+                                          _userModel.user.userName,
+                                          _userModel.user.profilURL,
+                                          context);
 
-                                            child: Image.asset(
-                                                "assets/images/attendance.png")),
-                                      )),
+                                      if (result != null) {
+                                        //  await Future.delayed(Duration(seconds: 1));
+                                        print(result);
+
+                                        PlatformDuyarliAlertDialog(
+                                          baslik: "Katılma İsteği",
+                                          icerik: dialogString,
+                                          anaButonYazisi: "Tamam",
+                                          // iptalButonYazisi: "Vazgeç"
+                                        ).goster(context);
+
+                                        /* _scaffoldKey.currentState.showSnackBar(
+                                             new SnackBar(
+                                               content: Text("Kategori Eklendi"),
+                                               duration: Duration(seconds: 2),
+                                             ),
+                                           );*/
+                                      }
+                                    },
+                                    child: Container(
+                                      child: Image.asset(
+                                          "assets/images/attendance.png"),
+                                    ),
+                                  ),
                                   // Icon(Icons.add_box,size: 30,),
                                   SizedBox(
                                     width: 15,

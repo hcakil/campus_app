@@ -2,6 +2,7 @@ import 'dart:io';
 
 import 'package:campusapp/locator.dart';
 import 'package:campusapp/model/club.dart';
+import 'package:campusapp/model/clubRequest.dart';
 import 'package:campusapp/model/user.dart';
 import 'package:campusapp/repository/user_repository.dart';
 import 'package:campusapp/service/auth_base.dart';
@@ -16,6 +17,7 @@ class UserModel with ChangeNotifier implements AuthBase {
   Club _club;
   String emailHataMesaji;
   String sifreHataMesaji;
+  String requestResultForClub;
 
   MyUser get user => _user;
 
@@ -149,36 +151,76 @@ print("e mail şifre kontrole geşdi  -->"+email + "  "+sifre);
   Future<List<Club>> getAllClubs() async {
     return await _userRepository.getAllClubs();
   }
+
   Future<List<Club>> getOfferedClubs(String intests) async {
-   // print("$intests interest in model");
+    // print("$intests interest in model");
     return await _userRepository.getOfferedClubs(intests);
   }
 
-  Future<String> uploadCategoryFile(String clubId, String fileType, File clubPhoto) async{
+  Future<String> uploadCategoryFile(
+      String clubId, String fileType, File clubPhoto) async {
     try {
       var indirmeLinki =
-      await _userRepository.uploadCategoryFile(clubId, fileType, clubPhoto);
+          await _userRepository.uploadCategoryFile(clubId, fileType, clubPhoto);
       return indirmeLinki;
-    }
-    finally{
+    } finally {
       state = ViewState.Idle;
     }
   }
 
-  @override
-  Future<Club>  addClub(Club club) async {
-try {
-  state = ViewState.Busy;
-  _club = await _userRepository.createClub(
-      club);
-  return _club;
-}finally{
- // state = ViewState.Idle;
-}
-
-
+  Future<Club> addClub(Club club) async {
+    try {
+      state = ViewState.Busy;
+      _club = await _userRepository.createClub(club);
+      return _club;
+    } finally {
+      // state = ViewState.Idle;
+    }
   }
 
+  Future<String> addRequestForClub(String clubId, String userId,
+      String clubName, String userName, String userProfileUrl) async {
+    try {
+      // state = ViewState.Busy;
+      //  print(" model  -->club id $clubId and user id $userId");
+      requestResultForClub = await _userRepository.addRequestForClub(
+          ClubRequest.status(
+              clubId: clubId,
+              userId: userId,
+              userName: userName,
+              userPhotoUrl: userProfileUrl,
+              clubName: clubName));
+      return requestResultForClub;
+    } finally {
+      // state = ViewState.Idle;
+    }
+  }
+
+  Future<List<ClubRequest>> getAllClubRequests() async {
+    return await _userRepository.getAllClubRequests();
+  }
+
+  Future<String> changeRequestTypeForClub(String clubId, String userId,
+      String clubName, String userName, String userProfileUrl, String type) async{
+    try {
+      // state = ViewState.Busy;
+      //  print(" model  -->club id $clubId and user id $userId");
+      requestResultForClub = await _userRepository.changeRequestTypeForClub(type,
+          ClubRequest.status(
+              clubId: clubId,
+              userId: userId,
+              userName: userName,
+              userPhotoUrl: userProfileUrl,
+              clubName: clubName));
+      return requestResultForClub;
+    } finally {
+      // state = ViewState.Idle;
+    }
+  }
+
+  Future<List<ClubRequest>>  getAllApprovalClubRequests(String userID) async{
+    return await _userRepository.getAllApprovalClubRequests(userID);
+  }
 
 /*Future<List<MyUser>> getUserWithPagination(
       MyUser enSonGetirilenUser, int getirilecekElemanSayisi) async {
