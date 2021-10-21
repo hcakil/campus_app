@@ -80,6 +80,35 @@ class _ProfilePageState extends State<ProfilePage> {
     );
   }
 
+  _showModelBottomSheet(BuildContext context){
+    showModalBottomSheet(
+      context: context,
+      builder: (context) {
+        return Container(
+          height: 180,
+          child: Column(
+            children: [
+              ListTile(
+                leading: Icon(Icons.camera),
+                title: Text("Kameradan Foto Çek"),
+                onTap: () {
+                  _kameradanFotoCek();
+                },
+              ),
+              ListTile(
+                leading: Icon(Icons.image),
+                title: Text("Galeriden Seç"),
+                onTap: () {
+                  _galeridenSec();
+                },
+              ),
+            ],
+          ),
+        );
+      },
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     UserModel _userModel = Provider.of<UserModel>(context, listen: false);
@@ -131,32 +160,7 @@ class _ProfilePageState extends State<ProfilePage> {
                 padding: const EdgeInsets.all(8.0),
                 child: GestureDetector(
                   onTap: () {
-                    showModalBottomSheet(
-                      context: context,
-                      builder: (context) {
-                        return Container(
-                          height: 180,
-                          child: Column(
-                            children: [
-                              ListTile(
-                                leading: Icon(Icons.camera),
-                                title: Text("Kameradan Foto Çek"),
-                                onTap: () {
-                                  _kameradanFotoCek();
-                                },
-                              ),
-                              ListTile(
-                                leading: Icon(Icons.image),
-                                title: Text("Galeriden Seç"),
-                                onTap: () {
-                                  _galeridenSec();
-                                },
-                              ),
-                            ],
-                          ),
-                        );
-                      },
-                    );
+                    _showModelBottomSheet(context);
                   },
                   child: FadeAnimation(
                     2,

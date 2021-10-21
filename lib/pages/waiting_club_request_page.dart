@@ -2,13 +2,12 @@ import 'package:campusapp/custom_utils/colors.dart';
 import 'package:campusapp/custom_utils/fade_animation.dart';
 import 'package:campusapp/custom_utils/platform_duyarli_alert_dialog.dart';
 import 'package:campusapp/model/clubRequest.dart';
+import 'package:campusapp/pages/add_activity_page.dart';
 import 'package:campusapp/pages/add_category_page.dart';
+import 'package:campusapp/pages/waiting_activity_request_page.dart';
 import 'package:campusapp/view_model/user_model.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-
-
-
 
 class WaitingClubRequest extends StatefulWidget {
   @override
@@ -16,50 +15,35 @@ class WaitingClubRequest extends StatefulWidget {
 }
 
 class _WaitingClubRequestState extends State<WaitingClubRequest> {
-  String dialogString="İlk Değerlendirmeniz Alınmıştır!";
+  String dialogString = "İlk Değerlendirmeniz Alınmıştır!";
 
-  Future<String> _approveRequest(
-      String clubId,
-      String userId,
-      String clubName,
-      String userName,
-      String userProfileUrl,
-      String type
-      ) async {
+  Future<String> _approveRequest(String clubId, String userId, String clubName,
+      String userName, String userProfileUrl, String type) async {
     // oAnkiKlup.name,_userModel.user.userName,_userModel.user.profilURL
 
     print("id of a approved club -> $clubId  // user id --> $userId");
     if (userId != null) {
       final _userModel = Provider.of<UserModel>(context, listen: false);
       try {
-
         var sonuc = await _userModel.changeRequestTypeForClub(
-            clubId, userId, clubName, userName, userProfileUrl,type);
+            clubId, userId, clubName, userName, userProfileUrl, type);
         //var url = await _userModel.uploadCategoryFile(_clubId, "club_photo", _clubPhoto);
         //print("sonuc --> $sonuc");
         if (sonuc.contains("Approved")) {
-          dialogString =
-          "İstek ONAYLANMIŞTIR!!";
+          dialogString = "İstek ONAYLANMIŞTIR!!";
         } else if (sonuc.contains("Denied")) {
-          dialogString =
-          "İstek Reddedilmiştir.";
+          dialogString = "İstek Reddedilmiştir.";
         }
         return sonuc;
       } catch (e) {
         print("-->HATA $e");
-
       }
     }
   }
 
-
-
   @override
   Widget build(BuildContext context) {
     UserModel _userModel = Provider.of<UserModel>(context);
-
-
-
 
     return Scaffold(
       appBar: AppBar(
@@ -169,11 +153,11 @@ class _WaitingClubRequestState extends State<WaitingClubRequest> {
             var tumKlupler = klubListesi.data;
 
             if (tumKlupler.length > 0) {
-             // List<ClubRequest> clubUniqueList = [];
-             //List<ClubRequest> clubUniqueReqestList = [];
+              // List<ClubRequest> clubUniqueList = [];
+              //List<ClubRequest> clubUniqueReqestList = [];
               //var totalList =[];
 
-             /* for(ClubRequest i in tumKlupler)
+              /* for(ClubRequest i in tumKlupler)
                 {
                   if(!clubUniqueList.contains(i))
                     {
@@ -189,19 +173,16 @@ class _WaitingClubRequestState extends State<WaitingClubRequest> {
                     }
                 }*/
 
-
               return RefreshIndicator(
                 onRefresh: _kluplerListesiniYenile,
                 child: ListView.builder(
                   itemCount: tumKlupler.length,
                   itemBuilder: (context, index) {
-
                     var oAnkiKlup = tumKlupler[index];
                     return GestureDetector(
                       onTap: () {
                         print("category name");
                         print(oAnkiKlup.clubName);
-
                       },
                       child: FadeAnimation(
                         2,
@@ -213,8 +194,8 @@ class _WaitingClubRequestState extends State<WaitingClubRequest> {
                           padding: const EdgeInsets.symmetric(
                               horizontal: 5, vertical: 0),
                           decoration: BoxDecoration(
-                              border: Border.all(
-                                  color: Colors.blueGrey, width: 1),
+                              border:
+                                  Border.all(color: Colors.blueGrey, width: 1),
                               boxShadow: const [
                                 BoxShadow(
                                     color: Colors.blueGrey,
@@ -223,77 +204,41 @@ class _WaitingClubRequestState extends State<WaitingClubRequest> {
                               ],
                               color: Colors.blueGrey.shade100,
                               borderRadius:
-                              const BorderRadius.all(Radius.circular(20))),
+                                  const BorderRadius.all(Radius.circular(20))),
                           child: Container(
-                            child: ListTile(
-                              title: Text(oAnkiKlup.userName.toUpperCase(),
-                                  style: TextStyle(
-                                      fontSize: 20,
-                                      color: Colors.purple,
-                                      fontWeight: FontWeight.bold,
-                                      letterSpacing: 2,
-                                      fontFamily: "OpenSans")),
-                              subtitle: Text(
-                                oAnkiKlup.clubName,
-                                style: TextStyle(fontStyle: FontStyle.italic),
-                              ),
-                              leading: CircleAvatar(
-                                backgroundColor: Colors.white,
-                                backgroundImage:
-                                NetworkImage(oAnkiKlup.userPhotoUrl),
-                                radius: 30,
-                              ),
-                              trailing: Row(
-                                mainAxisSize: MainAxisSize.min,
-                                children: [
-                                  InkWell(
-                                    onTap: () async {
-                                      print("Onay geldi");
-                                      var result = await _approveRequest(
-                                          oAnkiKlup.clubId,
-                                          _userModel.user.userID,
-                                          oAnkiKlup.clubName,
-                                          _userModel.user.userName,
-                                          _userModel.user.profilURL,
-                                          "Approved"
-                                      );
-
-                                      if (result != null) {
-                                        //  await Future.delayed(Duration(seconds: 1));
-                                        print(result);
-
-                                      PlatformDuyarliAlertDialog(
-                                        baslik: "Katılma İsteği",
-                                        icerik: dialogString,
-                                        anaButonYazisi: "Tamam",
-                                        // iptalButonYazisi: "Vazgeç"
-                                      ).goster(context);
-
-
-                                      }
-                                    },
-                                    child: Container(
-                                      height: 40,
-                                      child: Image.asset(
-                                          "assets/images/check.png"),
-                                    ),
-                                  ),
-                                  // Icon(Icons.add_box,size: 30,),
-                                  SizedBox(
-                                    width: 15,
-                                  ),
-                                  InkWell(onTap: () async{
-
-
-                                    print("Ret geldi");
+                              child: ListTile(
+                            onTap: () {},
+                            title: Text(oAnkiKlup.userName.toUpperCase(),
+                                style: TextStyle(
+                                    fontSize: 20,
+                                    color: Colors.purple,
+                                    fontWeight: FontWeight.bold,
+                                    letterSpacing: 2,
+                                    fontFamily: "OpenSans")),
+                            subtitle: Text(
+                              oAnkiKlup.clubName,
+                              style: TextStyle(fontStyle: FontStyle.italic),
+                            ),
+                            leading: CircleAvatar(backgroundImage:
+                            NetworkImage(oAnkiKlup.userPhotoUrl),
+                              radius: 30,
+                              backgroundColor: Colors.white,),
+                            trailing: Row(
+                              mainAxisSize: MainAxisSize.min,
+                              children: [
+                                InkWell(
+                                  onTap: () async {
+                                    print("Onay geldi");
                                     var result = await _approveRequest(
                                         oAnkiKlup.clubId,
-                                        _userModel.user.userID,
+                                        oAnkiKlup.userId,
+                                        //_userModel.user.userID,
                                         oAnkiKlup.clubName,
-                                        _userModel.user.userName,
-                                        _userModel.user.profilURL,
-                                      "Denied"
-                                        );
+                                        oAnkiKlup.userName,
+                                        oAnkiKlup.userPhotoUrl,
+                                        // _userModel.user.userName,
+                                        // _userModel.user.profilURL,
+                                        "Approved");
 
                                     if (result != null) {
                                       //  await Future.delayed(Duration(seconds: 1));
@@ -305,18 +250,51 @@ class _WaitingClubRequestState extends State<WaitingClubRequest> {
                                         anaButonYazisi: "Tamam",
                                         // iptalButonYazisi: "Vazgeç"
                                       ).goster(context);
-
-
                                     }
                                   },
-                                      child: Container(
-                                          height: 40,
-                                          child: Image.asset(
-                                              "assets/images/denied.png"))),
-                                ],
-                              ), //Text(oAnkiUser.aradakiFark),
-                            )
-                          ),
+                                  child: Container(
+                                    height: 40,
+                                    child:
+                                        Image.asset("assets/images/check.png"),
+                                  ),
+                                ),
+                                // Icon(Icons.add_box,size: 30,),
+                                SizedBox(
+                                  width: 15,
+                                ),
+                                InkWell(
+                                    onTap: () async {
+                                      print("Ret geldi");
+                                      var result = await _approveRequest(
+                                          oAnkiKlup.clubId,
+                                          oAnkiKlup.userId,
+                                          //_userModel.user.userID,
+                                          oAnkiKlup.clubName,
+                                          oAnkiKlup.userName,
+                                          //_userModel.user.userName,
+                                          oAnkiKlup.userPhotoUrl,
+                                          //_userModel.user.profilURL,
+                                          "Denied");
+
+                                      if (result != null) {
+                                        //  await Future.delayed(Duration(seconds: 1));
+                                        print(result);
+
+                                        PlatformDuyarliAlertDialog(
+                                          baslik: "Katılma İsteği",
+                                          icerik: dialogString,
+                                          anaButonYazisi: "Tamam",
+                                          // iptalButonYazisi: "Vazgeç"
+                                        ).goster(context);
+                                      }
+                                    },
+                                    child: Container(
+                                        height: 40,
+                                        child: Image.asset(
+                                            "assets/images/denied.png"))),
+                              ],
+                            ), //Text(oAnkiUser.aradakiFark),
+                          )),
                         ),
                       ),
                     );
@@ -339,7 +317,7 @@ class _WaitingClubRequestState extends State<WaitingClubRequest> {
                               size: 80,
                             ),
                             Text(
-                              "Henüz Kategori Yok",
+                              "Henüz Klüp İsteği Yok",
                               style: TextStyle(fontSize: 26),
                             ),
                           ]),
@@ -364,24 +342,28 @@ class _WaitingClubRequestState extends State<WaitingClubRequest> {
         break;
       case 1:
         print("Add Activity Clicked");
+        Navigator.of(context)
+            .push(MaterialPageRoute(builder: (context) => AddActivityPage()));
         break;
       case 2:
         print("Waiting Activity Request Clicked");
-        /* Navigator.of(context).pushAndRemoveUntil(
-            MaterialPageRoute(builder: (context) => LoginPage()),
-                (route) => false);*/
+        Navigator.of(context).push(
+            MaterialPageRoute(builder: (context) => WaitingActivityRequest()));
         break;
       case 3:
         print("Waiting Club Request Clicked");
-        Navigator.of(context)
-            .push(MaterialPageRoute(builder: (context) => WaitingClubRequest()));
+        Navigator.of(context).push(
+            MaterialPageRoute(builder: (context) => WaitingClubRequest()));
         break;
     }
   }
+
   Future<Null> _kluplerListesiniYenile() async {
     setState(() {});
     await Future.delayed(Duration(seconds: 1));
 
     return null;
   }
+
+
 }

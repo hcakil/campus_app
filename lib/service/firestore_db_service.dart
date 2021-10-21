@@ -1,12 +1,15 @@
+import 'package:campusapp/model/activity.dart';
+import 'package:campusapp/model/activityRequest.dart';
 import 'package:campusapp/model/club.dart';
 import 'package:campusapp/model/clubRequest.dart';
 import 'package:campusapp/model/user.dart';
 import 'package:campusapp/service/db_base.dart';
+import 'package:campusapp/service/local_db_helper.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
 class FirestoreDBService implements DBBase {
   final FirebaseFirestore _firestoreDb = FirebaseFirestore.instance;
-
+  DatabaseHelper databaseHelper =DatabaseHelper();
   //final FirebaseFirestore _firebaseDB = FirebaseFirestore.instance; bu böyle olmuş
 
   @override
@@ -89,10 +92,11 @@ class FirestoreDBService implements DBBase {
     QuerySnapshot querySnapshot = await _firestoreDb.collection("clubs").get();
 
     List<Club> tumKlupler = [];
-
+    databaseHelper.klupListeSil();
     for (DocumentSnapshot tekKlub in querySnapshot.docs) {
       Club _tekClub = Club.fromJson(tekKlub.data());
       tumKlupler.add(_tekClub);
+      databaseHelper.klupEkle(_tekClub);
       // test = ;
       // print("tek konusma  -----------> + ");
       // print(_tekClub.name);
@@ -107,23 +111,29 @@ class FirestoreDBService implements DBBase {
     //print("$interests interest in firestoredb-----");
     //print(interestStringList);
 
+
     QuerySnapshot querySnapshot = await _firestoreDb
         .collection("clubs")
         .where("interest", whereIn: interestStringList)
         .get();
 
-    //print(querySnapshot.size);
-    //print("size query");
-
     List<Club> tumKlupler = [];
+
+
+
+    //databaseHelper.klupListeSil();
 
     for (DocumentSnapshot tekKlub in querySnapshot.docs) {
       Club _tekClub = Club.fromJson(tekKlub.data());
       tumKlupler.add(_tekClub);
+     // databaseHelper.klupEkle(_tekClub);
       // test = ;
       // print("tek konusma  -----------> + ");
       // print(_tekClub.name);
     }
+
+
+
     return tumKlupler;
   }
 
@@ -244,6 +254,57 @@ class FirestoreDBService implements DBBase {
 
     }
     return tumKlupIstekleri;
+  }
+
+  Future<bool>  createActivity(Activity activity) async{
+    DocumentSnapshot _okunanActivity =
+    await FirebaseFirestore.instance.doc("activities/${activity.id}").get();
+
+    if (_okunanActivity.data() == null) {
+      print("nullll");
+      print(_okunanActivity.toString());
+      await _firestoreDb.collection("activities").doc(activity.id).set(activity.toJson());
+      return true;
+    } else {
+      return true;
+    }
+  }
+
+  Future<Activity> readActivity(String id) async{
+    DocumentSnapshot _okunanActivity =
+    await _firestoreDb.collection("activities").doc(id).get();
+
+    Map<String, dynamic> _okunanActivityBilgileriMap = _okunanActivity.data();
+
+    Activity _okunanActivityNesnesi = Activity.fromJson(_okunanActivityBilgileriMap);
+    print("okuunan club nesnesi" + _okunanActivityNesnesi.toString());
+    return _okunanActivityNesnesi;
+  }
+
+  Future<bool>  updateActivityPhoto(String activityId, String categoryPhotoUrl) async{
+    await _firestoreDb
+        .collection("activities")
+        .doc(activityId)
+        .update({"photoUrl": categoryPhotoUrl});
+    return true;
+  }
+
+  Future<List<ActivityRequest>> getAllActivityRequests() async{
+    QuerySnapshot querySnapshot =
+        await _firestoreDb.collection("activityWaiting").get();
+
+    List<ActivityRequest> tumAktiviteIstekleri = [];
+
+    for (DocumentSnapshot tekAktiviteIstegi in querySnapshot.docs) {
+      ActivityRequest _tekActivity = ActivityRequest.fromJson(tekAktiviteIstegi.data());
+      if (_tekActivity.status.contains("Waiting")) {
+        tumAktiviteIstekleri.add(_tekActivity);
+      }
+      // test = ;
+      // print("tek konusma  -----------> + ");
+      // print(_tekClub.name);
+    }
+    return tumAktiviteIstekleri;
   }
 
 /*

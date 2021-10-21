@@ -1,6 +1,8 @@
 import 'dart:io';
 
 import 'package:campusapp/locator.dart';
+import 'package:campusapp/model/activity.dart';
+import 'package:campusapp/model/activityRequest.dart';
 import 'package:campusapp/model/club.dart';
 import 'package:campusapp/model/clubRequest.dart';
 import 'package:campusapp/model/user.dart';
@@ -9,6 +11,7 @@ import 'package:campusapp/service/fake_auth_service.dart';
 import 'package:campusapp/service/firebase_auth_service.dart';
 import 'package:campusapp/service/firebase_storage_service.dart';
 import 'package:campusapp/service/firestore_db_service.dart';
+import 'package:campusapp/service/local_db_helper.dart';
 
 //as timeago;
 
@@ -21,6 +24,7 @@ class UserRepository implements AuthBase {
   FirestoreDBService _firestoreDBService = locator<FirestoreDBService>();
   FirebaseStorageService _firestoreStorageService =
   locator<FirebaseStorageService>();
+  DatabaseHelper databaseHelper = DatabaseHelper();
 
 
   AppMode appMode = AppMode.RELEASE;
@@ -151,7 +155,14 @@ class UserRepository implements AuthBase {
       var categoryPhotoUrl = await _firestoreStorageService.uploadCategoryFile(
           clubId, fileType, clubPhoto);
 
-      await _firestoreDBService.updateCategoryPhoto(clubId, categoryPhotoUrl);
+      if(fileType.contains("activity_photo"))
+        {
+          await _firestoreDBService.updateActivityPhoto(clubId, categoryPhotoUrl);
+        }
+      else{
+        await _firestoreDBService.updateCategoryPhoto(clubId, categoryPhotoUrl);
+      }
+
 
       return categoryPhotoUrl;
     }
@@ -164,6 +175,7 @@ class UserRepository implements AuthBase {
         club);
     print("$_sonuc in repo");
 
+    databaseHelper.klupEkle(club);
     if (_sonuc) {
       return await _firestoreDBService.readClub(club.id);
     } else {
@@ -240,6 +252,35 @@ class UserRepository implements AuthBase {
 
       return klupListesi;
     }
+  }
+
+  Future<Activity>  createActivity(Activity activity) async{
+    bool _sonuc = await _firestoreDBService.createActivity(
+        activity);
+    print("$_sonuc in repo");
+
+    //databaseHelper.klupEkle(club);
+    if (_sonuc) {
+      return await _firestoreDBService.readActivity(activity.id);
+    } else {
+      return null;
+    }
+
+  }
+
+  Future<List<ActivityRequest>> getAllActivityRequests() async {
+    if (appMode == AppMode.DEBUG) {
+      return [];
+    } else {
+      //DateTime _zaman = await _firestoreDBService.saatiGoster(userID);
+
+      // return await _firestoreDBService.getAllConversations(userID);
+      var klupListesi =
+      await _firestoreDBService.getAllActivityRequests();
+
+      return klupListesi;
+    }
+
   }
 
 

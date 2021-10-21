@@ -4,6 +4,7 @@ import 'package:campusapp/custom_utils/exceptions.dart';
 import 'package:campusapp/custom_utils/fade_animation.dart';
 import 'package:campusapp/custom_utils/platform_duyarli_alert_dialog.dart';
 import 'package:campusapp/model/user.dart';
+import 'package:campusapp/pages/home_page.dart';
 import 'package:campusapp/view_model/user_model.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
@@ -175,7 +176,7 @@ class _SignUpPageState extends State<SignUpPage> {
                         Container(
                             // color: Colors.red,
                             alignment: Alignment.topLeft,
-                            margin: const EdgeInsets.only(left: 22, bottom: 20),
+                            margin: const EdgeInsets.only(left: 22, bottom: 10),
                             child: const FadeAnimation(
                               2,
                               Text(
@@ -356,8 +357,29 @@ class _SignUpPageState extends State<SignUpPage> {
                                 },
                               ),
                             )),
-                        const SizedBox(
-                          height: 20,
+
+                        FadeAnimation(
+                          2,
+                          Container(
+
+                              width: double.infinity,
+                              height: 50,
+                              alignment: Alignment.center,
+                              margin: const EdgeInsets.only(top: 5),
+                              child: InkWell(
+                                onTap: ()=> Navigator.of(context).push(MaterialPageRoute(
+                                  fullscreenDialog: true,
+                                  builder: (context) => Home(),
+                                )),
+                                child: const Text(
+                                  "Kaydınız Varsa Giriş Yapmak için tıklayınız ",
+                                  style: TextStyle(
+                                      color: Colors.black45,
+                                      fontSize: 15,
+                                      fontWeight: FontWeight.bold,
+                                      fontStyle: FontStyle.italic),
+                                ),
+                              )),
                         ),
                         FadeAnimation(
                           2,
@@ -391,6 +413,9 @@ class _SignUpPageState extends State<SignUpPage> {
                               ),
                             ),
                           ),
+                        ),
+                        const SizedBox(
+                          height: 20,
                         ),
                       ],
                     ),

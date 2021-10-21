@@ -1,6 +1,10 @@
 import 'package:campusapp/custom_utils/fade_animation.dart';
 import 'package:campusapp/custom_utils/platform_duyarli_alert_dialog.dart';
 import 'package:campusapp/model/club.dart';
+import 'package:campusapp/pages/add_activity_page.dart';
+import 'package:campusapp/pages/add_category_page.dart';
+import 'package:campusapp/pages/waiting_activity_request_page.dart';
+import 'package:campusapp/pages/waiting_club_request_page.dart';
 import 'package:campusapp/view_model/user_model.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -13,6 +17,7 @@ class AllCategoryPage extends StatefulWidget {
 class _AllCategoryPageState extends State<AllCategoryPage> {
 
   String dialogString="İlk Katılma İsteğiniz Alınmıştır";
+  bool _shouldHideAction;
 
   Future<String> _submitRequest(
       String clubId,
@@ -47,10 +52,54 @@ class _AllCategoryPageState extends State<AllCategoryPage> {
   }
 
 
+  selectedItem(BuildContext context, int item) {
+    switch (item) {
+      case 0:
+        print("Add Category Clicked");
+        Navigator.of(context)
+            .push(MaterialPageRoute(builder: (context) => AddCategoryPage()));
+        break;
+      case 1:
+        print("Add Activity Clicked");
+        Navigator.of(context)
+            .push(MaterialPageRoute(builder: (context) => AddActivityPage()));
+        break;
+      case 2:
+        print("Waiting Activity Request Clicked");
+        Navigator.of(context)
+            .push(MaterialPageRoute(builder: (context) => WaitingActivityRequest()));
+        break;
+      case 3:
+        print("Waiting Club Request Clicked");
+        Navigator.of(context)
+            .push(MaterialPageRoute(builder: (context) => WaitingClubRequest()));
+        break;
+    }
+  }
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    _shouldHideAction = true;
+    //_scaffoldKey = GlobalKey<ScaffoldState>();
+  }
+
 
   @override
   Widget build(BuildContext context) {
     UserModel _userModel = Provider.of<UserModel>(context);
+
+    _kluplerListesiniYenile();
+    //await Future.delayed(Duration(seconds: 1));
+    if(_userModel !=null){
+    if (_userModel.user != null )
+      {
+        if(_userModel.user.seviye == 2)
+          _shouldHideAction = false;
+
+      }
+      }
 
     return Scaffold(
       appBar: AppBar(
@@ -77,6 +126,79 @@ class _AllCategoryPageState extends State<AllCategoryPage> {
             ),
           ],
         ),
+          actions: _shouldHideAction
+              ? []
+              : [
+            Theme(
+              data: Theme.of(context).copyWith(
+                  textTheme: TextTheme().apply(bodyColor: Colors.black),
+                  dividerColor: Colors.white,
+                  iconTheme: IconThemeData(color: Colors.white)),
+              child: PopupMenuButton<int>(
+                color: Colors.blueAccent,
+                itemBuilder: (context) => [
+                  PopupMenuItem<int>(
+                      value: 0,
+                      child: Row(
+                        children: [
+                          Icon(
+                            Icons.category,
+                            color: Colors.white,
+                          ),
+                          const SizedBox(
+                            width: 7,
+                          ),
+                          Text("Add Club"),
+                        ],
+                      )),
+                  PopupMenuItem<int>(
+                      value: 1,
+                      child: Row(
+                        children: [
+                          Icon(
+                            Icons.local_activity,
+                            color: Colors.white,
+                          ),
+                          const SizedBox(
+                            width: 7,
+                          ),
+                          Text("Add Activity"),
+                        ],
+                      )),
+                  PopupMenuDivider(),
+                  PopupMenuItem<int>(
+                      value: 2,
+                      child: Row(
+                        children: [
+                          Icon(
+                            Icons.local_activity_rounded,
+                            color: Colors.red,
+                          ),
+                          const SizedBox(
+                            width: 7,
+                          ),
+                          Text("Waiting Activity Requests")
+                        ],
+                      )),
+                  PopupMenuItem<int>(
+                      value: 3,
+                      child: Row(
+                        children: [
+                          Icon(
+                            Icons.category_rounded,
+                            color: Colors.red,
+                          ),
+                          const SizedBox(
+                            width: 7,
+                          ),
+                          Text("Waiting Club Requests")
+                        ],
+                      )),
+                ],
+                onSelected: (item) => selectedItem(context, item),
+              ),
+            ),
+          ]
 
       ),
       body: FutureBuilder<List<Club>>(

@@ -1,6 +1,8 @@
 import 'dart:io';
 
 import 'package:campusapp/locator.dart';
+import 'package:campusapp/model/activity.dart';
+import 'package:campusapp/model/activityRequest.dart';
 import 'package:campusapp/model/club.dart';
 import 'package:campusapp/model/clubRequest.dart';
 import 'package:campusapp/model/user.dart';
@@ -15,6 +17,7 @@ class UserModel with ChangeNotifier implements AuthBase {
   UserRepository _userRepository = locator<UserRepository>();
   MyUser _user;
   Club _club;
+  Activity _activity;
   String emailHataMesaji;
   String sifreHataMesaji;
   String requestResultForClub;
@@ -220,6 +223,30 @@ print("e mail şifre kontrole geşdi  -->"+email + "  "+sifre);
 
   Future<List<ClubRequest>>  getAllApprovalClubRequests(String userID) async{
     return await _userRepository.getAllApprovalClubRequests(userID);
+  }
+
+  Future<Activity>  addActivity(Activity activity)async {
+    try {
+      state = ViewState.Busy;
+      _activity = await _userRepository.createActivity(activity);
+      return _activity;
+    } finally {
+      // state = ViewState.Idle;
+    }
+  }
+
+  Future<String> uploadActivityFile(String activityId, String fileType, File activityPhoto) async{
+    try {
+      var indirmeLinki =
+      await _userRepository.uploadCategoryFile(activityId, fileType, activityPhoto);
+      return indirmeLinki;
+    } finally {
+      state = ViewState.Idle;
+    }
+  }
+
+  Future<List<ActivityRequest>> getAllActivityRequests() async {
+    return await _userRepository.getAllActivityRequests();
   }
 
 /*Future<List<MyUser>> getUserWithPagination(

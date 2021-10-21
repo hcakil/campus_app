@@ -5,6 +5,9 @@ import 'package:campusapp/custom_utils/check_box_list_model.dart';
 import 'package:campusapp/custom_utils/colors.dart';
 import 'package:campusapp/custom_utils/fade_animation.dart';
 import 'package:campusapp/model/club.dart';
+import 'package:campusapp/pages/add_activity_page.dart';
+import 'package:campusapp/pages/waiting_activity_request_page.dart';
+import 'package:campusapp/pages/waiting_club_request_page.dart';
 import 'package:campusapp/view_model/user_model.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
@@ -18,6 +21,7 @@ class AddCategoryPage extends StatefulWidget {
 }
 
 class _AddCategoryPageState extends State<AddCategoryPage> {
+
   String _clubName, _clubTagLine, _clubDesc, _clubInterest,_clubId;
   bool chckResult;
   final _formKey = GlobalKey<FormState>();
@@ -88,6 +92,7 @@ class _AddCategoryPageState extends State<AddCategoryPage> {
 
 
   }
+
   String randomSayiUret() {
     int rastgeleSayi = Random().nextInt(9999999);
     return rastgeleSayi.toString();
@@ -140,7 +145,7 @@ class _AddCategoryPageState extends State<AddCategoryPage> {
                         const SizedBox(
                           width: 7,
                         ),
-                        Text("Add Category"),
+                        Text("Add Club"),
                       ],
                     )),
                 PopupMenuItem<int>(
@@ -573,15 +578,18 @@ class _AddCategoryPageState extends State<AddCategoryPage> {
         break;
       case 1:
         print("Add Activity Clicked");
+        Navigator.of(context)
+            .push(MaterialPageRoute(builder: (context) => AddActivityPage()));
         break;
       case 2:
         print("Waiting Activity Request Clicked");
-        /* Navigator.of(context).pushAndRemoveUntil(
-            MaterialPageRoute(builder: (context) => LoginPage()),
-                (route) => false);*/
+        Navigator.of(context)
+            .push(MaterialPageRoute(builder: (context) => WaitingActivityRequest()));
         break;
       case 3:
         print("Waiting Club Request Clicked");
+        Navigator.of(context)
+            .push(MaterialPageRoute(builder: (context) => WaitingClubRequest()));
         break;
     }
   }
