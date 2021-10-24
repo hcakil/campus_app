@@ -42,7 +42,7 @@ class _SignUpPageState extends State<SignUpPage> {
     } else {
       sifreHataMesaji = null;
     }
-    if (!email.contains("@yeditepe.edu.tr")) {
+    if (!email.contains("@std.yeditepe.edu.tr")) {
       emailHataMesaji = "Lütfen geçerli bir öğrenci mail adresi giriniz";
       // print(email.length.toString() +" şifre uzunluk");
       sonuc = false;

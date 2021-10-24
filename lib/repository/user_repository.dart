@@ -107,6 +107,9 @@ class UserRepository implements AuthBase {
 
       await _firestoreDBService.updateProfilPhoto(userID, profilPhotoUrl);
 
+      //buraya da club ve activity wating varsa onları da ekleyelim
+    //  await _firestoreDBService.updateProfilPhotoFromRequests(userID, profilPhotoUrl);
+
       return profilPhotoUrl;
     }
   }

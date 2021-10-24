@@ -1,4 +1,5 @@
 import 'dart:io';
+import 'dart:math';
 
 import 'package:firebase_storage/firebase_storage.dart' as firebase_storage;
 import 'package:campusapp/service/storage_base.dart';
@@ -7,15 +8,21 @@ class FirebaseStorageService implements StorageBase {
   firebase_storage.FirebaseStorage storage =
       firebase_storage.FirebaseStorage.instance;
   firebase_storage.Reference _storageReference;
-
+  String randomSayiUret() {
+    int rastgeleSayi = Random().nextInt(999999);
+    return rastgeleSayi.toString();
+  }
   @override
   Future<String> uploadFile(
       String userID, String fileType, File yuklenecekDosya) async {
+
+    var random= randomSayiUret();
+
     _storageReference = firebase_storage.FirebaseStorage.instance
         .ref()
         .child(userID)
         .child(fileType)
-        .child("profil_photo.png");
+        .child(random+"profil_photo.png");
 
     firebase_storage.UploadTask uploadTask =
     _storageReference.putFile(yuklenecekDosya);

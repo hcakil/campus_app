@@ -61,52 +61,73 @@ class _ProfilePageState extends State<ProfilePage> {
   void _kameradanFotoCek() async {
     var pickedPhoto = await _picker.getImage(source: ImageSource.camera);
 
+    if(pickedPhoto != null){
     setState(
       () {
+
+
         _profilPhoto = File(pickedPhoto.path);
         Navigator.of(context).pop();
       },
-    );
+    );}
   }
 
   void _galeridenSec() async {
-    var pickedPhoto = await _picker.getImage(source: ImageSource.gallery);
+    try{
+      var pickedPhoto = await _picker.getImage(source: ImageSource.gallery);
+      if(pickedPhoto != null){
+        setState(
+              () {
 
-    setState(
-      () {
-        _profilPhoto = File(pickedPhoto.path);
-        Navigator.of(context).pop();
-      },
-    );
+            _profilPhoto = File(pickedPhoto.path);
+            Navigator.of(context).pop();
+          },
+        );}
+    }
+    catch(e){
+      print("hata "+ e.toString());
+    }
+
+
   }
 
   _showModelBottomSheet(BuildContext context){
-    showModalBottomSheet(
-      context: context,
-      builder: (context) {
-        return Container(
-          height: 180,
-          child: Column(
-            children: [
-              ListTile(
-                leading: Icon(Icons.camera),
-                title: Text("Kameradan Foto Çek"),
-                onTap: () {
-                  _kameradanFotoCek();
-                },
-              ),
-              ListTile(
-                leading: Icon(Icons.image),
-                title: Text("Galeriden Seç"),
-                onTap: () {
-                  _galeridenSec();
-                },
-              ),
-            ],
-          ),
-        );
-      },
-    );
+
+    try{
+      showModalBottomSheet(
+        context: context,
+        builder: (context) {
+          return Container(
+            height: 180,
+            child: Column(
+              children: [
+                ListTile(
+                  leading: Icon(Icons.camera),
+                  title: Text("Kameradan Foto Çek"),
+                  onTap: () {
+                    try{
+                    _kameradanFotoCek();}catch(e){
+                      print(e.toString());
+                    }
+                  },
+                ),
+                ListTile(
+                  leading: Icon(Icons.image),
+                  title: Text("Galeriden Seç"),
+                  onTap: () {
+                    _galeridenSec();
+                    //  Navigator.of(context).pop();
+                  },
+                ),
+              ],
+            ),
+          );
+        },
+      );
+    }catch(e){
+      print(e.toString() +" haata");
+    }
+
   }
 
   @override
@@ -117,466 +138,469 @@ class _ProfilePageState extends State<ProfilePage> {
    // print("interests");
     _fillInterests();
 
-    return Scaffold(
-      appBar: AppBar(
-        toolbarHeight: 100,
-        automaticallyImplyLeading: false,
-        backgroundColor: Colors.purple.shade600,
-        actions: <Widget>[
-          FlatButton(
-              onPressed: () => _cikisIcinOnayIste(context),
-              child: Icon(
-                Icons.logout,
-                color: Colors.white,
-                size: 27,
-              ))
-        ],
-        title: Row(
-          // mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-          children: [
-            Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Text(
-                  "Profil",
-                  style: TextStyle(
-                    fontSize: 35,
-                    fontWeight: FontWeight.bold,
-                    fontFamily: "Lobster",
-                    color: Colors.white,
-                    letterSpacing: 3,
-                  ),
-                ),
-              ],
-            ),
+    return  Scaffold(
+        appBar: AppBar(
+          toolbarHeight: 100,
+          automaticallyImplyLeading: false,
+          backgroundColor: Colors.purple.shade600,
+          actions: <Widget>[
+            FlatButton(
+                onPressed: () => _cikisIcinOnayIste(context),
+                child: Icon(
+                  Icons.logout,
+                  color: Colors.white,
+                  size: 27,
+                ))
           ],
-        ),
-      ),
-      body: SingleChildScrollView(
-        child: Center(
-          child: Column(
+          title: Row(
+            // mainAxisAlignment: MainAxisAlignment.spaceEvenly,
             children: [
-              Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: GestureDetector(
-                  onTap: () {
-                    _showModelBottomSheet(context);
-                  },
-                  child: FadeAnimation(
-                    2,
-                    CircleAvatar(
-                      radius: 80,
-                      backgroundColor: Colors.purpleAccent,
-                      child: CircleAvatar(
-                        backgroundColor: Colors.grey,
-                        backgroundImage: _profilPhoto == null
-                            ? NetworkImage(_userModel.user.profilURL)
-                            : FileImage(_profilPhoto),
-                        radius: 75,
-                      ),
-                    ),
-                  ),
-                ),
-              ),
-              FadeAnimation(
-                2,
-                Container(
-                  width: double.infinity,
-                  height: 70,
-                  margin:
-                      const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
-                  padding:
-                      const EdgeInsets.symmetric(horizontal: 15, vertical: 5),
-                  decoration: BoxDecoration(
-                      border: Border.all(color: Colors.purpleAccent, width: 1),
-                      boxShadow: const [
-                        BoxShadow(
-                            color: Colors.purpleAccent,
-                            blurRadius: 10,
-                            offset: Offset(1, 1)),
-                      ],
+              Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Text(
+                    "Profil",
+                    style: TextStyle(
+                      fontSize: 35,
+                      fontWeight: FontWeight.bold,
+                      fontFamily: "Lobster",
                       color: Colors.white,
-                      borderRadius:
-                          const BorderRadius.all(Radius.circular(20))),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.start,
-                    children: [
-                      const Icon(Icons.email_outlined),
-                      Expanded(
-                        child: Container(
-                          margin: const EdgeInsets.only(left: 10),
-                          child: TextFormField(
-                            maxLines: 1,
-                            readOnly: true,
-                            //controller: _controllerUserName,
-                            initialValue: _userModel.user.email,
-                            decoration: InputDecoration(
-                              labelText: " E-Mail ...",
-                              border: InputBorder.none,
-                            ),
-                          ),
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-              ),
-              FadeAnimation(
-                2,
-                Container(
-                  width: double.infinity,
-                  height: 70,
-                  margin:
-                      const EdgeInsets.symmetric(horizontal: 10, vertical: 20),
-                  padding:
-                      const EdgeInsets.symmetric(horizontal: 15, vertical: 5),
-                  decoration: BoxDecoration(
-                      border: Border.all(color: Colors.purpleAccent, width: 1),
-                      boxShadow: const [
-                        BoxShadow(
-                            color: Colors.purpleAccent,
-                            blurRadius: 10,
-                            offset: Offset(1, 1)),
-                      ],
-                      color: Colors.white,
-                      borderRadius:
-                          const BorderRadius.all(Radius.circular(20))),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.start,
-                    children: [
-                      const Icon(Icons.person),
-                      Expanded(
-                        child: Container(
-                          margin: const EdgeInsets.only(left: 10),
-                          child: TextFormField(
-                            controller: _controllerUserName,
-                            maxLines: 1,
-                            //controller: _controllerUserName,
-                            //initialValue: _userModel.user.userName,
-                            decoration: InputDecoration(
-                              labelText: " Kullanıcı Adı ...",
-                              border: InputBorder.none,
-                            ),
-                          ),
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-              ),
-              FadeAnimation(
-                2,
-                Text(
-                  "İlgi Alanları",
-                  style: TextStyle(
-                      fontSize: 20,
-                      color: Colors.purple,
-                      letterSpacing: 2,
-                      fontFamily: "Lobster"),
-                ),
-              ),
-              FadeAnimation(
-                2,
-                Container(
-                  width: double.infinity,
-                  height: 290,
-                  //color: Colors.purple.shade50,
-                  decoration: const BoxDecoration(
-                    // color: Colors.blueGrey,
-                    borderRadius: BorderRadius.only(
-                      topLeft: Radius.circular(50),
-                      topRight: Radius.circular(50),
-                      bottomLeft: Radius.circular(50),
-                      bottomRight: Radius.circular(50),
+                      letterSpacing: 3,
                     ),
                   ),
-                  child: new ListView.builder(
-                    physics: NeverScrollableScrollPhysics(),
-                    itemCount: checkBoxListTileModel.length,
-                    itemBuilder: (BuildContext context, int index) {
-                      return new Card(
-                        shadowColor: Colors.purpleAccent,
-                        child: new Container(
-                          width: 150,
-                          child: Column(
-                            children: <Widget>[
-                              new CheckboxListTile(
-                                  activeColor: Colors.pink[300],
-                                  dense: true,
-                                  //font change
-                                  title: new Text(
-                                    checkBoxListTileModel[index].title,
-                                    style: TextStyle(
-                                      fontSize: 18,
-                                      fontFamily: "Lobster",
-                                      fontWeight: FontWeight.normal,
-                                    ),
-                                  ),
-                                  value: checkBoxListTileModel[index].isCheck,
-                                  secondary: Container(
-                                    height: 50,
-                                    width: 50,
-                                    child: Image.asset(
-                                      checkBoxListTileModel[index].img,
-                                      fit: BoxFit.cover,
-                                    ),
-                                  ),
-                                  onChanged: (bool val) {
-                                    itemChange(val, index);
-                                  })
-                            ],
-                          ),
-                        ),
-                      );
-                    },
-                  ),
-                ),
+                ],
               ),
-              FadeAnimation(
-                2,
-                Text(
-                  "Kayıtlı Kulüpler",
-                  style: TextStyle(
-                      fontSize: 20,
-                      color: Colors.purple,
-                      letterSpacing: 2,
-                      fontFamily: "Lobster"),
-                ),
-              ),
-              FadeAnimation(
-                2,
-                Container(
-                  width: double.infinity,
-                  height: 180,
-                  //color: Colors.purple.shade50,
-                  decoration: const BoxDecoration(
-                    // color: Colors.blueGrey,
-                    borderRadius: BorderRadius.only(
-                      topLeft: Radius.circular(50),
-                      topRight: Radius.circular(50),
-                      bottomLeft: Radius.circular(50),
-                      bottomRight: Radius.circular(50),
-                    ),
-                  ),
-                  child: FutureBuilder(
-                    future: _userModel.getAllApprovalClubRequests(_userModel.user.userID),
-                      builder: (context, klubListesi){
-                        if (!klubListesi.hasData) {
-                          return Center(
-                            child: Text("Kayıtlı Klüp Yok",style: TextStyle(
-
-                                fontSize: 20,
-                                color: Colors.red,
-                                fontWeight: FontWeight.bold,
-                                letterSpacing: 2,
-                                fontFamily: "OpenSans"
-
-                            ),),
-                          );
-                        }else {
-                          var tumKlupler = klubListesi.data;
-                          if (tumKlupler.length > 0){
-                            return ListView.builder(
-                              itemCount: tumKlupler.length,
-                              itemBuilder: (context, index) {
-
-                                var oAnkiKlup = tumKlupler[index];
-                                return GestureDetector(
-                                  onTap: () {
-                                    print("category name");
-                                    print(oAnkiKlup.clubName);
-
-                                  },
-                                  child: FadeAnimation(
-                                    2,
-                                    Container(
-                                      width: double.infinity,
-                                      height: 50,
-                                      margin: const EdgeInsets.symmetric(
-                                          horizontal: 5, vertical: 5),
-                                      padding: const EdgeInsets.symmetric(
-                                          horizontal: 5, vertical: 0),
-                                      decoration: BoxDecoration(
-                                          border: Border.all(
-                                              color: Colors.blueGrey, width: 1),
-                                          boxShadow: const [
-                                            BoxShadow(
-                                                color: Colors.blueGrey,
-                                                blurRadius: 10,
-                                                offset: Offset(1, 1)),
-                                          ],
-                                          color: Colors.blueGrey.shade50,
-                                          borderRadius:
-                                          const BorderRadius.all(Radius.circular(20))),
-                                      child: Container(
-                                          child: ListTile(
-                                            title: Text(oAnkiKlup.clubName,
-                                                style: TextStyle(
-                                                    fontSize: 20,
-                                                    color: Colors.red,
-                                                    fontWeight: FontWeight.bold,
-                                                    letterSpacing: 2,
-                                                    fontFamily: "OpenSans")),
-
-
-                                            trailing: Row(
-                                              mainAxisSize: MainAxisSize.min,
-                                              children: [
-                                                InkWell(
-                                                  onTap: ()  {
-
-                                                    print("bilgi sayfasına git");
-
-
-
-                                                  },
-                                                  child: Container(
-                                                    height: 40,
-                                                    child: Image.asset(
-                                                        "assets/images/info.png"),
-                                                  ),
-                                                ),
-                                                // Icon(Icons.add_box,size: 30,),
-                                                SizedBox(
-                                                  width: 5,
-                                                ),
-
-                                              ],
-                                            ), //Text(oAnkiUser.aradakiFark),
-                                          )
-                                      ),
-                                    ),
-                                  ),
-                                );
-                              },
-                            );
-                          }
-                          else return Center(
-                            child: Text("Kayıtlı Klüp Yok",style: TextStyle(
-
-                                fontSize: 20,
-                                color: Colors.red,
-                                fontWeight: FontWeight.bold,
-                                letterSpacing: 2,
-                                fontFamily: "OpenSans"
-
-                            ),),
-                          );
-
-                        }
-                      }
-                  ),
-                ),
-              ),
-              FadeAnimation(
-                2,
-                Text(
-                  "Kayıtlı Aktiviteler",
-                  style: TextStyle(
-                      fontSize: 20,
-                      color: Colors.purple,
-                      letterSpacing: 2,
-                      fontFamily: "Lobster"),
-                ),
-              ),
-              FadeAnimation(
-                2,
-                Container(
-                  width: double.infinity,
-                  height: 50,
-                  //color: Colors.purple.shade50,
-                  decoration: const BoxDecoration(
-                    // color: Colors.blueGrey,
-                    borderRadius: BorderRadius.only(
-                      topLeft: Radius.circular(50),
-                      topRight: Radius.circular(50),
-                      bottomLeft: Radius.circular(50),
-                      bottomRight: Radius.circular(50),
-                    ),
-                  ),
-                  child: Container(),/*new ListView.builder(
-                    physics: NeverScrollableScrollPhysics(),
-                    itemCount: checkBoxListTileModel.length,
-                    itemBuilder: (BuildContext context, int index) {
-                      return new Card(
-                        shadowColor: Colors.purpleAccent,
-                        child: new Container(
-                          width: 150,
-                          child: Column(
-                            children: <Widget>[
-                              new CheckboxListTile(
-                                  activeColor: Colors.pink[300],
-                                  dense: true,
-                                  //font change
-                                  title: new Text(
-                                    checkBoxListTileModel[index].title,
-                                    style: TextStyle(
-                                      fontSize: 18,
-                                      fontFamily: "Lobster",
-                                      fontWeight: FontWeight.normal,
-                                    ),
-                                  ),
-                                  value: checkBoxListTileModel[index].isCheck,
-                                  secondary: Container(
-                                    height: 50,
-                                    width: 50,
-                                    child: Image.asset(
-                                      checkBoxListTileModel[index].img,
-                                      fit: BoxFit.cover,
-                                    ),
-                                  ),
-                                  onChanged: (bool val) {
-                                    itemChange(val, index);
-                                  })
-                            ],
-                          ),
-                        ),
-                      );
-                    },
-                  ),*/
-                ),
-              ),
-              FadeAnimation(
-                2,
-                ElevatedButton(
-                  onPressed: () => _profilPhotoVeUserNameGuncelle(context),
-                  style: ElevatedButton.styleFrom(
-                      onPrimary: Colors.purpleAccent,
-                      shadowColor: Colors.purpleAccent,
-                      elevation: 18,
-                      padding: EdgeInsets.zero,
-                      shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(20))),
-                  child: Ink(
-                    decoration: BoxDecoration(
-                        gradient: const LinearGradient(colors: [
-                          Colors.purpleAccent,
-                          Colors.deepPurpleAccent
-                        ]),
-                        borderRadius: BorderRadius.circular(20)),
-                    child: Container(
-                      width: 200,
-                      height: 50,
-                      alignment: Alignment.center,
-                      child: const Text(
-                        'Güncelle',
-                        style: TextStyle(
-                          fontSize: 30,
-                          color: Colors.white,
-                        ),
-                      ),
-                    ),
-                  ),
-                ),
-              ),
-              SizedBox(
-                height: 100,
-              )
             ],
           ),
         ),
-      ),
-    );
+        body: SingleChildScrollView(
+          child: Center(
+            child: Column(
+              children: [
+                Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: GestureDetector(
+                    onTap: () {
+                      //Platform.isAndroid == true ?
+                      _showModelBottomSheet(context);//:
+                      //_galeridenSec();
+                    },
+                    child: FadeAnimation(
+                      2,
+                      CircleAvatar(
+                        radius: 80,
+                        backgroundColor: Colors.purpleAccent,
+                        child: CircleAvatar(
+                          backgroundColor: Colors.grey,
+                          backgroundImage: _profilPhoto == null
+                              ? NetworkImage(_userModel.user.profilURL)
+                              : FileImage(_profilPhoto),
+                          radius: 75,
+                        ),
+                      ),
+                    ),
+                  ),
+                ),
+                FadeAnimation(
+                  2,
+                  Container(
+                    width: double.infinity,
+                    height: 70,
+                    margin:
+                        const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
+                    padding:
+                        const EdgeInsets.symmetric(horizontal: 15, vertical: 5),
+                    decoration: BoxDecoration(
+                        border: Border.all(color: Colors.purpleAccent, width: 1),
+                        boxShadow: const [
+                          BoxShadow(
+                              color: Colors.purpleAccent,
+                              blurRadius: 10,
+                              offset: Offset(1, 1)),
+                        ],
+                        color: Colors.white,
+                        borderRadius:
+                            const BorderRadius.all(Radius.circular(20))),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      children: [
+                        const Icon(Icons.email_outlined),
+                        Expanded(
+                          child: Container(
+                            margin: const EdgeInsets.only(left: 10),
+                            child: TextFormField(
+                              maxLines: 1,
+                              readOnly: true,
+                              //controller: _controllerUserName,
+                              initialValue: _userModel.user.email,
+                              decoration: InputDecoration(
+                                labelText: " E-Mail ...",
+                                border: InputBorder.none,
+                              ),
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+                FadeAnimation(
+                  2,
+                  Container(
+                    width: double.infinity,
+                    height: 70,
+                    margin:
+                        const EdgeInsets.symmetric(horizontal: 10, vertical: 20),
+                    padding:
+                        const EdgeInsets.symmetric(horizontal: 15, vertical: 5),
+                    decoration: BoxDecoration(
+                        border: Border.all(color: Colors.purpleAccent, width: 1),
+                        boxShadow: const [
+                          BoxShadow(
+                              color: Colors.purpleAccent,
+                              blurRadius: 10,
+                              offset: Offset(1, 1)),
+                        ],
+                        color: Colors.white,
+                        borderRadius:
+                            const BorderRadius.all(Radius.circular(20))),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      children: [
+                        const Icon(Icons.person),
+                        Expanded(
+                          child: Container(
+                            margin: const EdgeInsets.only(left: 10),
+                            child: TextFormField(
+                              controller: _controllerUserName,
+                              maxLines: 1,
+                              //controller: _controllerUserName,
+                              //initialValue: _userModel.user.userName,
+                              decoration: InputDecoration(
+                                labelText: " Kullanıcı Adı ...",
+                                border: InputBorder.none,
+                              ),
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+                FadeAnimation(
+                  2,
+                  Text(
+                    "İlgi Alanları",
+                    style: TextStyle(
+                        fontSize: 20,
+                        color: Colors.purple,
+                        letterSpacing: 2,
+                        fontFamily: "Lobster"),
+                  ),
+                ),
+                FadeAnimation(
+                  2,
+                  Container(
+                    width: double.infinity,
+                    height: 290,
+                    //color: Colors.purple.shade50,
+                    decoration: const BoxDecoration(
+                      // color: Colors.blueGrey,
+                      borderRadius: BorderRadius.only(
+                        topLeft: Radius.circular(50),
+                        topRight: Radius.circular(50),
+                        bottomLeft: Radius.circular(50),
+                        bottomRight: Radius.circular(50),
+                      ),
+                    ),
+                    child: new ListView.builder(
+                      physics: NeverScrollableScrollPhysics(),
+                      itemCount: checkBoxListTileModel.length,
+                      itemBuilder: (BuildContext context, int index) {
+                        return new Card(
+                          shadowColor: Colors.purpleAccent,
+                          child: new Container(
+                            width: 150,
+                            child: Column(
+                              children: <Widget>[
+                                new CheckboxListTile(
+                                    activeColor: Colors.pink[300],
+                                    dense: true,
+                                    //font change
+                                    title: new Text(
+                                      checkBoxListTileModel[index].title,
+                                      style: TextStyle(
+                                        fontSize: 18,
+                                        fontFamily: "Lobster",
+                                        fontWeight: FontWeight.normal,
+                                      ),
+                                    ),
+                                    value: checkBoxListTileModel[index].isCheck,
+                                    secondary: Container(
+                                      height: 50,
+                                      width: 50,
+                                      child: Image.asset(
+                                        checkBoxListTileModel[index].img,
+                                        fit: BoxFit.cover,
+                                      ),
+                                    ),
+                                    onChanged: (bool val) {
+                                      itemChange(val, index);
+                                    })
+                              ],
+                            ),
+                          ),
+                        );
+                      },
+                    ),
+                  ),
+                ),
+                FadeAnimation(
+                  2,
+                  Text(
+                    "Kayıtlı Kulüpler",
+                    style: TextStyle(
+                        fontSize: 20,
+                        color: Colors.purple,
+                        letterSpacing: 2,
+                        fontFamily: "Lobster"),
+                  ),
+                ),
+                FadeAnimation(
+                  2,
+                  Container(
+                    width: double.infinity,
+                    height: 180,
+                    //color: Colors.purple.shade50,
+                    decoration: const BoxDecoration(
+                      // color: Colors.blueGrey,
+                      borderRadius: BorderRadius.only(
+                        topLeft: Radius.circular(50),
+                        topRight: Radius.circular(50),
+                        bottomLeft: Radius.circular(50),
+                        bottomRight: Radius.circular(50),
+                      ),
+                    ),
+                    child: FutureBuilder(
+                      future: _userModel.getAllApprovalClubRequests(_userModel.user.userID),
+                        builder: (context, klubListesi){
+                          if (!klubListesi.hasData) {
+                            return Center(
+                              child: Text("Kayıtlı Klüp Yok",style: TextStyle(
+
+                                  fontSize: 20,
+                                  color: Colors.red,
+                                  fontWeight: FontWeight.bold,
+                                  letterSpacing: 2,
+                                  fontFamily: "OpenSans"
+
+                              ),),
+                            );
+                          }else {
+                            var tumKlupler = klubListesi.data;
+                            if (tumKlupler.length > 0){
+                              return ListView.builder(
+                                itemCount: tumKlupler.length,
+                                itemBuilder: (context, index) {
+
+                                  var oAnkiKlup = tumKlupler[index];
+                                  return GestureDetector(
+                                    onTap: () {
+                                      print("category name");
+                                      print(oAnkiKlup.clubName);
+
+                                    },
+                                    child: FadeAnimation(
+                                      2,
+                                      Container(
+                                        width: double.infinity,
+                                        height: 50,
+                                        margin: const EdgeInsets.symmetric(
+                                            horizontal: 5, vertical: 5),
+                                        padding: const EdgeInsets.symmetric(
+                                            horizontal: 5, vertical: 0),
+                                        decoration: BoxDecoration(
+                                            border: Border.all(
+                                                color: Colors.blueGrey, width: 1),
+                                            boxShadow: const [
+                                              BoxShadow(
+                                                  color: Colors.blueGrey,
+                                                  blurRadius: 10,
+                                                  offset: Offset(1, 1)),
+                                            ],
+                                            color: Colors.blueGrey.shade50,
+                                            borderRadius:
+                                            const BorderRadius.all(Radius.circular(20))),
+                                        child: Container(
+                                            child: ListTile(
+                                              title: Text(oAnkiKlup.clubName,
+                                                  style: TextStyle(
+                                                      fontSize: 20,
+                                                      color: Colors.red,
+                                                      fontWeight: FontWeight.bold,
+                                                      letterSpacing: 2,
+                                                      fontFamily: "OpenSans")),
+
+
+                                              trailing: Row(
+                                                mainAxisSize: MainAxisSize.min,
+                                                children: [
+                                                  InkWell(
+                                                    onTap: ()  {
+
+                                                      print("bilgi sayfasına git");
+
+
+
+                                                    },
+                                                    child: Container(
+                                                      height: 40,
+                                                      child: Image.asset(
+                                                          "assets/images/info.png"),
+                                                    ),
+                                                  ),
+                                                  // Icon(Icons.add_box,size: 30,),
+                                                  SizedBox(
+                                                    width: 5,
+                                                  ),
+
+                                                ],
+                                              ), //Text(oAnkiUser.aradakiFark),
+                                            )
+                                        ),
+                                      ),
+                                    ),
+                                  );
+                                },
+                              );
+                            }
+                            else return Center(
+                              child: Text("Kayıtlı Klüp Yok",style: TextStyle(
+
+                                  fontSize: 20,
+                                  color: Colors.red,
+                                  fontWeight: FontWeight.bold,
+                                  letterSpacing: 2,
+                                  fontFamily: "OpenSans"
+
+                              ),),
+                            );
+
+                          }
+                        }
+                    ),
+                  ),
+                ),
+                FadeAnimation(
+                  2,
+                  Text(
+                    "Kayıtlı Aktiviteler",
+                    style: TextStyle(
+                        fontSize: 20,
+                        color: Colors.purple,
+                        letterSpacing: 2,
+                        fontFamily: "Lobster"),
+                  ),
+                ),
+                FadeAnimation(
+                  2,
+                  Container(
+                    width: double.infinity,
+                    height: 50,
+                    //color: Colors.purple.shade50,
+                    decoration: const BoxDecoration(
+                      // color: Colors.blueGrey,
+                      borderRadius: BorderRadius.only(
+                        topLeft: Radius.circular(50),
+                        topRight: Radius.circular(50),
+                        bottomLeft: Radius.circular(50),
+                        bottomRight: Radius.circular(50),
+                      ),
+                    ),
+                    child: Container(),/*new ListView.builder(
+                      physics: NeverScrollableScrollPhysics(),
+                      itemCount: checkBoxListTileModel.length,
+                      itemBuilder: (BuildContext context, int index) {
+                        return new Card(
+                          shadowColor: Colors.purpleAccent,
+                          child: new Container(
+                            width: 150,
+                            child: Column(
+                              children: <Widget>[
+                                new CheckboxListTile(
+                                    activeColor: Colors.pink[300],
+                                    dense: true,
+                                    //font change
+                                    title: new Text(
+                                      checkBoxListTileModel[index].title,
+                                      style: TextStyle(
+                                        fontSize: 18,
+                                        fontFamily: "Lobster",
+                                        fontWeight: FontWeight.normal,
+                                      ),
+                                    ),
+                                    value: checkBoxListTileModel[index].isCheck,
+                                    secondary: Container(
+                                      height: 50,
+                                      width: 50,
+                                      child: Image.asset(
+                                        checkBoxListTileModel[index].img,
+                                        fit: BoxFit.cover,
+                                      ),
+                                    ),
+                                    onChanged: (bool val) {
+                                      itemChange(val, index);
+                                    })
+                              ],
+                            ),
+                          ),
+                        );
+                      },
+                    ),*/
+                  ),
+                ),
+                FadeAnimation(
+                  2,
+                  ElevatedButton(
+                    onPressed: () => _profilPhotoVeUserNameGuncelle(context),
+                    style: ElevatedButton.styleFrom(
+                        onPrimary: Colors.purpleAccent,
+                        shadowColor: Colors.purpleAccent,
+                        elevation: 18,
+                        padding: EdgeInsets.zero,
+                        shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(20))),
+                    child: Ink(
+                      decoration: BoxDecoration(
+                          gradient: const LinearGradient(colors: [
+                            Colors.purpleAccent,
+                            Colors.deepPurpleAccent
+                          ]),
+                          borderRadius: BorderRadius.circular(20)),
+                      child: Container(
+                        width: 200,
+                        height: 50,
+                        alignment: Alignment.center,
+                        child: const Text(
+                          'Güncelle',
+                          style: TextStyle(
+                            fontSize: 30,
+                            color: Colors.white,
+                          ),
+                        ),
+                      ),
+                    ),
+                  ),
+                ),
+                SizedBox(
+                  height: 100,
+                )
+              ],
+            ),
+          ),
+        ),
+      );
+
   }
 
   void _profilPhotoVeUserNameGuncelle(BuildContext context) async {

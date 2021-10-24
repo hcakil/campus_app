@@ -75,6 +75,9 @@ class FirestoreDBService implements DBBase {
         .collection("users")
         .doc(userID)
         .update({"profilURL": profilPhotoUrl});
+
+
+
     return true;
   }
 
@@ -305,6 +308,40 @@ class FirestoreDBService implements DBBase {
       // print(_tekClub.name);
     }
     return tumAktiviteIstekleri;
+  }
+
+  Future<bool> updateProfilPhotoFromRequests(String userID, String profilPhotoUrl) async{
+
+    QuerySnapshot querySnapshot =
+    await _firestoreDb.collection("clubWaiting").get();
+
+   // List<ClubRequest> tumKlupIstekleri = [];
+    print("geldi");
+
+    for (DocumentSnapshot tekKlubIstegi in querySnapshot.docs) {
+      ClubRequest _tekClub = ClubRequest.fromJson(tekKlubIstegi.data());
+      if (_tekClub.userId.contains(userID)) {
+        print(_tekClub.userName);
+        print("bu ğişiyor");
+
+        await _firestoreDb
+            .collection("clubWaiting")
+            .doc(userID)
+            .update({"userPhotoUrl": profilPhotoUrl});
+
+        print("bu gelen");
+        print(profilPhotoUrl.toString());
+print("bu yenisi");
+print(_tekClub.userPhotoUrl);
+      }
+      // test = ;
+      // print("tek konusma  -----------> + ");
+      // print(_tekClub.name);
+    }
+
+
+    return true;
+
   }
 
 /*
