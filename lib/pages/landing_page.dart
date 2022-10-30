@@ -12,7 +12,9 @@ class LandingPage extends StatefulWidget {
 class _LandingPageState extends State<LandingPage> {
   @override
   Widget build(BuildContext context) {
+
     final _userModel = Provider.of<UserModel>(context);
+
     if (_userModel.state == ViewState.Idle) {
       if (_userModel.user == null) {
         //no Signed anybody

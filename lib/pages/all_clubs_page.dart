@@ -2,11 +2,14 @@ import 'package:campusapp/custom_utils/fade_animation.dart';
 import 'package:campusapp/custom_utils/platform_duyarli_alert_dialog.dart';
 import 'package:campusapp/model/club.dart';
 import 'package:campusapp/pages/add_activity_page.dart';
-import 'package:campusapp/pages/add_category_page.dart';
+import 'package:campusapp/pages/add_club_page.dart';
+import 'package:campusapp/pages/club_activities_info_page.dart';
+import 'package:campusapp/pages/club_general_info_page.dart';
 import 'package:campusapp/pages/waiting_activity_request_page.dart';
 import 'package:campusapp/pages/waiting_club_request_page.dart';
 import 'package:campusapp/view_model/user_model.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_zoom_drawer/flutter_zoom_drawer.dart';
 import 'package:provider/provider.dart';
 
 class AllCategoryPage extends StatefulWidget {
@@ -126,6 +129,7 @@ class _AllCategoryPageState extends State<AllCategoryPage> {
             ),
           ],
         ),
+
           actions: _shouldHideAction
               ? []
               : [
@@ -200,7 +204,11 @@ class _AllCategoryPageState extends State<AllCategoryPage> {
             ),
           ]
 
-      ),
+      ),/*
+      endDrawer:ZoomDrawer(
+        mainScreen: AllCategoryPage(),
+        menuScreen: AddActivityPage(),
+      ),*/
       body: FutureBuilder<List<Club>>(
         future: _userModel.getAllClubs(),
         builder: (context, klubListesi) {
@@ -266,7 +274,7 @@ class _AllCategoryPageState extends State<AllCategoryPage> {
                                       fontSize: 20,
                                       color: Colors.red,
                                       fontWeight: FontWeight.bold,
-                                      letterSpacing: 2,
+                                      letterSpacing: 1,
                                       fontFamily: "OpenSans")),
                               subtitle: Text(
                                 oAnkiKlup.subtitle,
@@ -292,7 +300,7 @@ class _AllCategoryPageState extends State<AllCategoryPage> {
                                           _userModel.user.profilURL,
                                           context);
 
-                                      if (result != null) {
+                                      if (result != null && !result.contains("Approved")) {
                                         //  await Future.delayed(Duration(seconds: 1));
                                         print(result);
 
@@ -310,6 +318,19 @@ class _AllCategoryPageState extends State<AllCategoryPage> {
                                              ),
                                            );*/
                                       }
+                                      else if(result != null && result.contains("Approved")){
+                                        Navigator.of(context)
+                                            .push(MaterialPageRoute(builder: (context) => ClubActivitiesInfo(gelenClub: oAnkiKlup,)));
+
+                                      }
+                                      else{
+                                        PlatformDuyarliAlertDialog(
+                                          baslik: "Katılma İsteği",
+                                          icerik: "Hata",
+                                          anaButonYazisi: "Tamam",
+                                          // iptalButonYazisi: "Vazgeç"
+                                        ).goster(context);
+                                      }
                                     },
                                     child: Container(
                                       child: Image.asset(
@@ -320,7 +341,12 @@ class _AllCategoryPageState extends State<AllCategoryPage> {
                                   SizedBox(
                                     width: 15,
                                   ),
-                                  InkWell(onTap: (){},
+                                  InkWell(onTap: (){
+
+                                    Navigator.of(context)
+                                        .push(MaterialPageRoute(builder: (context) => ClubGeneralInfo(gelenClub: oAnkiKlup,)));
+
+                                  },
                                       child: Container(
                                           child: Image.asset(
                                               "assets/images/info.png"))),

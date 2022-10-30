@@ -3,7 +3,7 @@ import 'package:campusapp/custom_utils/fade_animation.dart';
 import 'package:campusapp/custom_utils/platform_duyarli_alert_dialog.dart';
 import 'package:campusapp/model/clubRequest.dart';
 import 'package:campusapp/pages/add_activity_page.dart';
-import 'package:campusapp/pages/add_category_page.dart';
+import 'package:campusapp/pages/add_club_page.dart';
 import 'package:campusapp/pages/waiting_activity_request_page.dart';
 import 'package:campusapp/view_model/user_model.dart';
 import 'package:flutter/material.dart';

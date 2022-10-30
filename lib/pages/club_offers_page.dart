@@ -2,7 +2,9 @@ import 'package:campusapp/custom_utils/fade_animation.dart';
 import 'package:campusapp/custom_utils/platform_duyarli_alert_dialog.dart';
 import 'package:campusapp/model/club.dart';
 import 'package:campusapp/pages/add_activity_page.dart';
-import 'package:campusapp/pages/add_category_page.dart';
+import 'package:campusapp/pages/add_club_page.dart';
+import 'package:campusapp/pages/club_activities_info_page.dart';
+import 'package:campusapp/pages/club_general_info_page.dart';
 import 'package:campusapp/pages/waiting_activity_request_page.dart';
 import 'package:campusapp/pages/waiting_club_request_page.dart';
 import 'package:campusapp/view_model/user_model.dart';
@@ -42,6 +44,8 @@ class _CategoryOffersPageState extends State<CategoryOffersPage> {
     if (userId != null) {
       final _userModel = Provider.of<UserModel>(context, listen: false);
       try {
+
+
         var sonuc = await _userModel.addRequestForClub(
             clubId, userId, clubName, userName, userProfileUrl);
         //var url = await _userModel.uploadCategoryFile(_clubId, "club_photo", _clubPhoto);
@@ -158,7 +162,7 @@ class _CategoryOffersPageState extends State<CategoryOffersPage> {
                                         fontSize: 20,
                                         color: Colors.red,
                                         fontWeight: FontWeight.bold,
-                                        letterSpacing: 2,
+                                        letterSpacing: 1,
                                         fontFamily: "OpenSans")),
                                 subtitle: Text(
                                   oAnkiKlup.subtitle,
@@ -184,7 +188,7 @@ class _CategoryOffersPageState extends State<CategoryOffersPage> {
                                             _userModel.user.profilURL,
                                             context);
 
-                                        if (result != null) {
+                                        if (result != null && !result.contains("Approved")) {
                                           //  await Future.delayed(Duration(seconds: 1));
                                           print(result);
 
@@ -202,6 +206,19 @@ class _CategoryOffersPageState extends State<CategoryOffersPage> {
                                              ),
                                            );*/
                                         }
+                                        else if(result != null && result.contains("Approved")){
+                                          Navigator.of(context)
+                                              .push(MaterialPageRoute(builder: (context) => ClubActivitiesInfo(gelenClub: oAnkiKlup,)));
+
+                                        }
+                                        else{
+                                          PlatformDuyarliAlertDialog(
+                                            baslik: "Katılma İsteği",
+                                            icerik: "Hata",
+                                            anaButonYazisi: "Tamam",
+                                            // iptalButonYazisi: "Vazgeç"
+                                          ).goster(context);
+                                        }
                                       },
                                       child: Container(
                                         child: Image.asset(
@@ -216,6 +233,9 @@ class _CategoryOffersPageState extends State<CategoryOffersPage> {
                                         onTap: () {
                                           print(
                                               "Klüp Bilgilerini Görme İsteği geldi");
+                                          Navigator.of(context)
+                                              .push(MaterialPageRoute(builder: (context) => ClubGeneralInfo(gelenClub: oAnkiKlup,)));
+
                                         },
                                         child: Container(
                                             child: Image.asset(

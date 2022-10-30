@@ -46,7 +46,13 @@ class _SignUpPageState extends State<SignUpPage> {
       emailHataMesaji = "Lütfen geçerli bir öğrenci mail adresi giriniz";
       // print(email.length.toString() +" şifre uzunluk");
       sonuc = false;
-    } else {
+    }
+    if (_interest.length<1) {
+      emailHataMesaji = "İlgi alanı Ekleyiniz";
+      print(_interest.length.toString() +" interest uzunluk");
+      sonuc = false;
+    }
+    else {
       emailHataMesaji = null;
     }
 
@@ -57,20 +63,20 @@ class _SignUpPageState extends State<SignUpPage> {
   void _formSubmit() async {
     _formKey.currentState.save();
     debugPrint("e mail " + _email + "  sifre  ==" + _sifre);
-    //print(_formType.toString() + "  -----aaa");
     final _userModel = Provider.of<UserModel>(context, listen: false);
+    for (int i = 0; i < 4; i++) {
+      if(checkBoxListTileModel[i].isCheck)
+        _interest = _interest + i.toString();
+      print("interest $_interest ");
+    }
     var result = emailSifreKontrol(_email, _sifre);
     print(result.toString() + " result");
-    //  print("sifre hata " + sifreHataMesaji);
-    //print("email hata " + emailHataMesaji);
+
+
 
     if (result) {
       try {
-        for (int i = 0; i < 4; i++) {
-          if(checkBoxListTileModel[i].isCheck)
-          _interest = _interest + i.toString();
-          print("interest $_interest ");
-        }
+
         //_userModel.createUserWithSignInWithEmail(_email, _sifre);
         MyUser _kayitYapanUser =
             await _userModel.createUserWithSignInWithEmail(_email, _sifre,_interest);
@@ -93,11 +99,11 @@ class _SignUpPageState extends State<SignUpPage> {
       }
     } else {
 
-      print("$emailHataMesaji  email");
-      //print(sifreHataMesaji + " sifre" );
+
+      print("$emailHataMesaji  hata mesajı");
       _interest="";
       if (emailHataMesaji != "base" || sifreHataMesaji != "base") {
-        hataMessage = "Öğrenci mail adresi ve\n 6 haneli şifre giriniz";
+        hataMessage = "Öğrenci mail adresi,\n en az bir ilgi alanı ve\n 6 haneli şifre giriniz";
         showDialog(
             context: context,
             builder: (context) {

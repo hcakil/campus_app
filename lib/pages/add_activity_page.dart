@@ -4,7 +4,7 @@ import 'package:campusapp/custom_utils/colors.dart';
 import 'package:campusapp/custom_utils/fade_animation.dart';
 import 'package:campusapp/model/activity.dart';
 import 'package:campusapp/model/club.dart';
-import 'package:campusapp/pages/add_category_page.dart';
+import 'package:campusapp/pages/add_club_page.dart';
 import 'package:campusapp/pages/waiting_activity_request_page.dart';
 import 'package:campusapp/pages/waiting_club_request_page.dart';
 import 'package:campusapp/service/local_db_helper.dart';
@@ -21,10 +21,15 @@ class AddActivityPage extends StatefulWidget {
 }
 
 class _AddActivityPageState extends State<AddActivityPage> {
-  String _activityName, _activityTagLine, _activityDesc, _activityClubId, _activityId;
+  String _activityName,
+      _activityTagLine,
+      _activityDesc,
+      _activityClubId,
+      _activityId;
   DateTime dateTime = DateTime.now();
   List<Club> tumKlupler;
   DatabaseHelper databaseHelper;
+
   //String klupID;
   Club secilenKlup;
   bool chckResult;
@@ -33,22 +38,24 @@ class _AddActivityPageState extends State<AddActivityPage> {
   final ImagePicker _picker = ImagePicker();
 
   Widget buildDateTimePicker() {
-    if(Platform.isAndroid)
-      return SizedBox(height: 1,);
+    if (Platform.isAndroid)
+      return SizedBox(
+        height: 1,
+      );
     else
-    return SizedBox(
-      height: 180,
-      width: 250,
-
-      child: CupertinoDatePicker(
-        initialDateTime: dateTime,
-        mode: CupertinoDatePickerMode.dateAndTime,
-        minimumDate: DateTime(DateTime.now().year, 2, 1),
-        maximumDate: DateTime(DateTime.now().year+3, 2, 1),
-        use24hFormat: true,
-        onDateTimeChanged: (dateTime) =>
-            setState(() => this.dateTime = dateTime),
-      ),);
+      return SizedBox(
+        height: 180,
+        width: 250,
+        child: CupertinoDatePicker(
+          initialDateTime: dateTime,
+          mode: CupertinoDatePickerMode.dateAndTime,
+          minimumDate: DateTime(DateTime.now().year, 2, 1),
+          maximumDate: DateTime(DateTime.now().year + 3, 2, 1),
+          use24hFormat: true,
+          onDateTimeChanged: (dateTime) =>
+              setState(() => this.dateTime = dateTime),
+        ),
+      );
   }
 
   String randomSayiUret() {
@@ -115,13 +122,16 @@ class _AddActivityPageState extends State<AddActivityPage> {
     }
   }
 
-  _formSubmit() async{
-
+  _formSubmit() async {
     _formKey.currentState.save();
-    print("adı $_activityName -- tag $_activityTagLine -- desc $_activityDesc --bağlı klüp  $_activityClubId -- club photo $_activityPhoto -- tarih $dateTime");
+    print(
+        "adı $_activityName -- tag $_activityTagLine -- desc $_activityDesc --bağlı klüp  $_activityClubId -- club photo $_activityPhoto -- tarih $dateTime");
 
-    if(_activityName==null || _activityDesc == null || _activityClubId== null || _activityTagLine== null || _activityPhoto== null )
-    {
+    if (_activityName == null ||
+        _activityDesc == null ||
+        _activityClubId == null ||
+        _activityTagLine == null ||
+        _activityPhoto == null) {
       showDialog(
           context: context,
           builder: (context) {
@@ -151,29 +161,29 @@ class _AddActivityPageState extends State<AddActivityPage> {
               ],
             );
           });
-    }
-    else
-    {
+    } else {
       final _userModel = Provider.of<UserModel>(context, listen: false);
 
-      _activityId = _activityName.replaceAll(" ", "") ;
+      _activityId = _activityName.replaceAll(" ", "");
       _activityId = _activityId + randomSayiUret();
       print("clubid $_activityId");
-      try{
-        var sonuc = await _userModel.addActivity(Activity(id: _activityId,description: _activityDesc,clubId: _activityClubId,name: _activityName,tagLine: _activityTagLine,dateTime: dateTime));
-        var url = await _userModel.uploadActivityFile(_activityId, "activity_photo", _activityPhoto);
+      try {
+        var sonuc = await _userModel.addActivity(Activity(
+            id: _activityId,
+            description: _activityDesc,
+            clubId: _activityClubId,
+            name: _activityName,
+            tagLine: _activityTagLine,
+            dateTime: dateTime));
+        var url = await _userModel.uploadActivityFile(
+            _activityId, "activity_photo", _activityPhoto);
         print("sonuc --> $sonuc");
-      }catch (e){
+      } catch (e) {
         print("-->HATA $e");
       }
       // print("clubId $_clubId");
 
-
-
-
     }
-
-
   }
 
   @override
@@ -184,18 +194,18 @@ class _AddActivityPageState extends State<AddActivityPage> {
     databaseHelper = DatabaseHelper();
     databaseHelper.klupleriGetir().then((kisileriIcerenMapListesi) {
       for (Map okunanMap in kisileriIcerenMapListesi) {
-      //  if(okunanMap["photoUrl"]!=null)
+        //  if(okunanMap["photoUrl"]!=null)
         tumKlupler.add(Club.fromJson(okunanMap));
       }
-    _activityClubId = tumKlupler[0].id;
+      _activityClubId = tumKlupler[0].id;
       secilenKlup = tumKlupler[0];
-    //  debugPrint("secilen kisiye deger atandı" + secilenKlup.name);
+      //  debugPrint("secilen kisiye deger atandı" + secilenKlup.name);
       // }
 
       setState(() {});
     });
-
   }
+
   List<DropdownMenuItem<Club>> klupItemleriOlustur() {
     return tumKlupler.map((kisim) {
       return DropdownMenuItem<Club>(
@@ -239,6 +249,7 @@ class _AddActivityPageState extends State<AddActivityPage> {
 
     return newDate;
   }
+
   Future<TimeOfDay> pickTime(BuildContext context) async {
     final initialTime = TimeOfDay(hour: 9, minute: 0);
     final newTime = await showTimePicker(
@@ -253,10 +264,8 @@ class _AddActivityPageState extends State<AddActivityPage> {
     return newTime;
   }
 
-
   @override
   Widget build(BuildContext context) {
-
     return Scaffold(
       appBar: AppBar(
         toolbarHeight: 100,
@@ -446,7 +455,8 @@ class _AddActivityPageState extends State<AddActivityPage> {
                                                   image: _activityPhoto == null
                                                       ? NetworkImage(
                                                           "https://digitalpratix.com/wp-content/uploads/activity_resim.jpg")
-                                                      : FileImage(_activityPhoto),
+                                                      : FileImage(
+                                                          _activityPhoto),
                                                   fit: BoxFit.fill),
                                             ),
                                           ),
@@ -496,7 +506,8 @@ class _AddActivityPageState extends State<AddActivityPage> {
                                             //maxLines: 1,
                                             onSaved:
                                                 (String girilenAcitivityName) {
-                                              _activityName = girilenAcitivityName;
+                                              _activityName =
+                                                  girilenAcitivityName;
                                             },
                                             decoration: InputDecoration(
                                               labelText: " Activity Name ...",
@@ -604,11 +615,13 @@ class _AddActivityPageState extends State<AddActivityPage> {
                         const SizedBox(
                           height: 20,
                         ),
-                        FadeAnimation(2,
+                        FadeAnimation(
+                          2,
                           Row(
                             children: <Widget>[
                               Padding(
-                                padding: const EdgeInsets.symmetric(horizontal: 8),
+                                padding:
+                                    const EdgeInsets.symmetric(horizontal: 8),
                                 child: Text(
                                   "Klüp :",
                                   style: TextStyle(
@@ -619,8 +632,8 @@ class _AddActivityPageState extends State<AddActivityPage> {
                                 ),
                               ),
                               Container(
-                                padding:
-                                EdgeInsets.symmetric(vertical: 1, horizontal: 12),
+                                padding: EdgeInsets.symmetric(
+                                    vertical: 1, horizontal: 12),
                                 margin: EdgeInsets.all(8),
                                 decoration: BoxDecoration(
                                     border: Border.all(
@@ -639,14 +652,17 @@ class _AddActivityPageState extends State<AddActivityPage> {
                                         items: klupItemleriOlustur(),
                                         hint: Text("Kategori Seç"),
                                         value: secilenKlup,
-
-                                        onChanged: (Club kullanicininSectigiKisi) {
+                                        onChanged:
+                                            (Club kullanicininSectigiKisi) {
                                           debugPrint("Seçilen club:" +
-                                              kullanicininSectigiKisi.name.toString());
+                                              kullanicininSectigiKisi.name
+                                                  .toString());
                                           setState(() {
-                                            secilenKlup = kullanicininSectigiKisi;
+                                            secilenKlup =
+                                                kullanicininSectigiKisi;
 
-                                            _activityClubId=kullanicininSectigiKisi.id;
+                                            _activityClubId =
+                                                kullanicininSectigiKisi.id;
                                           });
                                         })),
                               ),
@@ -656,11 +672,13 @@ class _AddActivityPageState extends State<AddActivityPage> {
                         const SizedBox(
                           height: 20,
                         ),
-                        FadeAnimation(2,
+                        FadeAnimation(
+                          2,
                           Row(
                             children: <Widget>[
                               Padding(
-                                padding: const EdgeInsets.symmetric(horizontal: 8),
+                                padding:
+                                    const EdgeInsets.symmetric(horizontal: 8),
                                 child: Text(
                                   "Tarih :",
                                   style: TextStyle(
@@ -673,18 +691,13 @@ class _AddActivityPageState extends State<AddActivityPage> {
                               FadeAnimation(
                                 2,
                                 Column(
-                                  mainAxisAlignment: MainAxisAlignment.center ,
+                                  mainAxisAlignment: MainAxisAlignment.center,
                                   children: [
-
-                                      buildDateTimePicker(),
-
-
+                                    buildDateTimePicker(),
                                     ElevatedButton(
                                       onPressed: () {
-
-                                        if(Platform.isIOS)
-                                          {
-                                           /* Utils.showSheet(
+                                        if (Platform.isIOS) {
+                                          /* Utils.showSheet(
                                               context,
                                               child: buildDateTimePicker(),
                                               onClicked: () {
@@ -695,32 +708,32 @@ class _AddActivityPageState extends State<AddActivityPage> {
                                                 //Navigator.pop(context);
                                               },
                                             );*/
-                                          }
-                                        else
-                                          {
-                                            pickDateTime(context);
-                                          }
-
-                                      },//=> pickDateTime(context),
+                                        } else {
+                                          pickDateTime(context);
+                                        }
+                                      }, //=> pickDateTime(context),
                                       style: ElevatedButton.styleFrom(
                                           onPrimary: Colors.purpleAccent,
                                           shadowColor: Colors.purpleAccent,
                                           elevation: 18,
                                           padding: EdgeInsets.zero,
                                           shape: RoundedRectangleBorder(
-                                              borderRadius: BorderRadius.circular(20))),
+                                              borderRadius:
+                                                  BorderRadius.circular(20))),
                                       child: Ink(
                                         decoration: BoxDecoration(
-                                            gradient: const LinearGradient(colors: [
-                                              gradientStart,
-                                              gradientEnd
-                                            ]),
-                                            borderRadius: BorderRadius.circular(20)),
+                                            gradient: const LinearGradient(
+                                                colors: [
+                                                  gradientStart,
+                                                  gradientEnd
+                                                ]),
+                                            borderRadius:
+                                                BorderRadius.circular(20)),
                                         child: Container(
                                           width: 200,
                                           height: 50,
                                           alignment: Alignment.center,
-                                          child:  Text(
+                                          child: Text(
                                             getText(),
                                             style: TextStyle(
                                               fontSize: 20,
@@ -739,7 +752,6 @@ class _AddActivityPageState extends State<AddActivityPage> {
                         const SizedBox(
                           height: 40,
                         ),
-
 
                         const SizedBox(
                           height: 20,

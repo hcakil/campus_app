@@ -11,8 +11,8 @@ class TabItemData {
 
   static Map<TabItem, TabItemData> tumTablar = {
     TabItem.Oneri:
-    TabItemData("Öneri", Icons.supervised_user_circle),
+    TabItemData("Öneriler", Icons.supervised_user_circle),
     TabItem.Profil: TabItemData("Profil", Icons.person),
-    TabItem.Kategoriler: TabItemData("Tüm Kategoriler", Icons.category),
+    TabItem.Kategoriler: TabItemData("Tüm Klüpler", Icons.category),
   };
 }

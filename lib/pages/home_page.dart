@@ -5,7 +5,6 @@ import 'package:campusapp/view_model/user_model.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-
 class Home extends StatefulWidget {
   Home({Key key}) : super(key: key);
 
@@ -16,14 +15,16 @@ class Home extends StatefulWidget {
 class _HomeState extends State<Home> {
   String _email, _sifre;
   final _formKey = GlobalKey<FormState>();
-  String emailHataMesaji ;
-  String sifreHataMesaji ;
+  String emailHataMesaji;
+
+  String sifreHataMesaji;
+
   String hataMessage = "";
 
   bool emailSifreKontrol(String email, String sifre) {
     var sonuc = true;
-    emailHataMesaji="base";
-    sifreHataMesaji="base";
+    emailHataMesaji = "base";
+    sifreHataMesaji = "base";
     //print("e mail şifre kontrole geşdi  -->" + email );
     //print(" şifre kontrole geşdi  -->" + sifre );
     if (sifre.length < 6) {
@@ -33,7 +34,7 @@ class _HomeState extends State<Home> {
     } else {
       sifreHataMesaji = null;
     }
-    if (!email.contains("@yeditepe.edu.tr")) {
+    if (!email.contains("yeditepe.edu.tr")) {
       emailHataMesaji = "Lütfen geçerli bir öğrenci mail adresi giriniz";
       // print(email.length.toString() +" şifre uzunluk");
       sonuc = false;
@@ -44,8 +45,6 @@ class _HomeState extends State<Home> {
     return sonuc;
   }
 
-
-
   //Form Submit
   void _formSubmit() async {
     _formKey.currentState.save();
@@ -53,28 +52,24 @@ class _HomeState extends State<Home> {
     //print(_formType.toString() + "  -----aaa");
     final _userModel = Provider.of<UserModel>(context, listen: false);
     var result = emailSifreKontrol(_email, _sifre);
-    //print(result.toString() + " result");
-    //  print("sifre hata " + sifreHataMesaji);
-    //print("email hata " + emailHataMesaji);
 
     if (result) {
       try {
-print("result true");
+        print("result true");
         //_userModel.createUserWithSignInWithEmail(_email, _sifre);
         MyUser _girisYapanUser =
-        await _userModel.signInWithEmailAndPassword(_email, _sifre);
+            await _userModel.signInWithEmailAndPassword(_email, _sifre);
 
         //print("kayıt yapan user" + _kayitYapanUser.email);
         if (_girisYapanUser != null) {
-           print("Oturum Açan userId   :  " + _girisYapanUser.userID.toString());
+          print("Oturum Açan userId   :  " + _girisYapanUser.userID.toString());
         }
       } catch (e) {
         print(
             " Widgeet Email Create Hata Tekrarı çıktı _2_    " + e.toString());
       }
-    }
-    else {
-      print("$emailHataMesaji  email" );
+    } else {
+      print("$emailHataMesaji  email");
       //print(sifreHataMesaji + " sifre" );
 
       if (emailHataMesaji != "base" || sifreHataMesaji != "base") {
@@ -112,12 +107,8 @@ print("result true");
     }
   }
 
-
-
   @override
   Widget build(BuildContext context) {
-
-
     final _userModel = Provider.of<UserModel>(context);
 
     if (_userModel.user != null) {
@@ -136,10 +127,10 @@ print("result true");
                 begin: Alignment.topCenter,
                 end: Alignment.bottomCenter,
                 colors: [
-                  // Colors.purple,
-                  Colors.purple.shade600,
-                  Colors.deepPurpleAccent,
-                ])),
+              // Colors.purple,
+              Colors.purple.shade600,
+              Colors.deepPurpleAccent,
+            ])),
         child: Column(
           children: [
             Container(
@@ -173,7 +164,7 @@ print("result true");
                           height: 50,
                         ),
                         Container(
-                          // color: Colors.red,
+                            // color: Colors.red,
                             alignment: Alignment.topLeft,
                             margin: const EdgeInsets.only(left: 22, bottom: 20),
                             child: const FadeAnimation(
@@ -219,7 +210,7 @@ print("result true");
                                       Expanded(
                                         child: Container(
                                           margin:
-                                          const EdgeInsets.only(left: 10),
+                                              const EdgeInsets.only(left: 10),
                                           child: TextFormField(
                                             maxLines: 1,
                                             onSaved: (String girilenEmail) {
@@ -257,13 +248,13 @@ print("result true");
                                             Radius.circular(20))),
                                     child: Row(
                                       mainAxisAlignment:
-                                      MainAxisAlignment.start,
+                                          MainAxisAlignment.start,
                                       children: [
                                         Icon(Icons.text_fields),
                                         Expanded(
                                           child: Container(
                                             margin:
-                                            const EdgeInsets.only(left: 10),
+                                                const EdgeInsets.only(left: 10),
                                             child: TextFormField(
                                               obscureText: true,
                                               maxLines: 1,
@@ -283,7 +274,6 @@ print("result true");
                             ),
                           ),
                         ),
-
                         const SizedBox(
                           height: 20,
                         ),
@@ -323,13 +313,13 @@ print("result true");
                         FadeAnimation(
                           2,
                           Container(
-
                               width: double.infinity,
                               height: 70,
                               alignment: Alignment.center,
                               margin: const EdgeInsets.only(top: 10),
                               child: InkWell(
-                                onTap: ()=> Navigator.of(context).push(MaterialPageRoute(
+                                onTap: () => Navigator.of(context)
+                                    .push(MaterialPageRoute(
                                   fullscreenDialog: true,
                                   builder: (context) => SignUpPage(),
                                 )),

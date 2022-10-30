@@ -1,8 +1,8 @@
 import 'package:campusapp/custom_utils/my_custom_navi.dart';
 import 'package:campusapp/custom_utils/tab_items.dart';
 import 'package:campusapp/model/user.dart';
-import 'package:campusapp/pages/all_categories_page.dart';
-import 'package:campusapp/pages/category_offers_page.dart';
+import 'package:campusapp/pages/all_clubs_page.dart';
+import 'package:campusapp/pages/club_offers_page.dart';
 import 'package:campusapp/pages/profil_page.dart';
 import 'package:campusapp/view_model/user_model.dart';
 import 'package:flutter/material.dart';

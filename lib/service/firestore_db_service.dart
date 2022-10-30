@@ -2,6 +2,7 @@ import 'package:campusapp/model/activity.dart';
 import 'package:campusapp/model/activityRequest.dart';
 import 'package:campusapp/model/club.dart';
 import 'package:campusapp/model/clubRequest.dart';
+import 'package:campusapp/model/post.dart';
 import 'package:campusapp/model/user.dart';
 import 'package:campusapp/service/db_base.dart';
 import 'package:campusapp/service/local_db_helper.dart';
@@ -9,7 +10,8 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 
 class FirestoreDBService implements DBBase {
   final FirebaseFirestore _firestoreDb = FirebaseFirestore.instance;
-  DatabaseHelper databaseHelper =DatabaseHelper();
+  DatabaseHelper databaseHelper = DatabaseHelper();
+
   //final FirebaseFirestore _firebaseDB = FirebaseFirestore.instance; bu böyle olmuş
 
   @override
@@ -76,8 +78,6 @@ class FirestoreDBService implements DBBase {
         .doc(userID)
         .update({"profilURL": profilPhotoUrl});
 
-
-
     return true;
   }
 
@@ -114,7 +114,6 @@ class FirestoreDBService implements DBBase {
     //print("$interests interest in firestoredb-----");
     //print(interestStringList);
 
-
     QuerySnapshot querySnapshot = await _firestoreDb
         .collection("clubs")
         .where("interest", whereIn: interestStringList)
@@ -122,20 +121,16 @@ class FirestoreDBService implements DBBase {
 
     List<Club> tumKlupler = [];
 
-
-
     //databaseHelper.klupListeSil();
 
     for (DocumentSnapshot tekKlub in querySnapshot.docs) {
       Club _tekClub = Club.fromJson(tekKlub.data());
       tumKlupler.add(_tekClub);
-     // databaseHelper.klupEkle(_tekClub);
+      // databaseHelper.klupEkle(_tekClub);
       // test = ;
       // print("tek konusma  -----------> + ");
       // print(_tekClub.name);
     }
-
-
 
     return tumKlupler;
   }
@@ -243,9 +238,9 @@ class FirestoreDBService implements DBBase {
     return true;
   }
 
-  Future<List<ClubRequest>> getAllApprovalClubRequests(String userID) async{
+  Future<List<ClubRequest>> getAllApprovalClubRequests(String userID) async {
     QuerySnapshot querySnapshot =
-    await _firestoreDb.collection("clubAttendant").get();
+        await _firestoreDb.collection("clubAttendant").get();
 
     List<ClubRequest> tumKlupIstekleri = [];
 
@@ -254,37 +249,41 @@ class FirestoreDBService implements DBBase {
       if (_tekClub.userId.contains(userID)) {
         tumKlupIstekleri.add(_tekClub);
       }
-
     }
     return tumKlupIstekleri;
   }
 
-  Future<bool>  createActivity(Activity activity) async{
+  Future<bool> createActivity(Activity activity) async {
     DocumentSnapshot _okunanActivity =
-    await FirebaseFirestore.instance.doc("activities/${activity.id}").get();
+        await FirebaseFirestore.instance.doc("activities/${activity.id}").get();
 
     if (_okunanActivity.data() == null) {
       print("nullll");
       print(_okunanActivity.toString());
-      await _firestoreDb.collection("activities").doc(activity.id).set(activity.toJson());
+      await _firestoreDb
+          .collection("activities")
+          .doc(activity.id)
+          .set(activity.toJson());
       return true;
     } else {
       return true;
     }
   }
 
-  Future<Activity> readActivity(String id) async{
+  Future<Activity> readActivity(String id) async {
     DocumentSnapshot _okunanActivity =
-    await _firestoreDb.collection("activities").doc(id).get();
+        await _firestoreDb.collection("activities").doc(id).get();
 
     Map<String, dynamic> _okunanActivityBilgileriMap = _okunanActivity.data();
 
-    Activity _okunanActivityNesnesi = Activity.fromJson(_okunanActivityBilgileriMap);
+    Activity _okunanActivityNesnesi =
+        Activity.fromJson(_okunanActivityBilgileriMap);
     print("okuunan club nesnesi" + _okunanActivityNesnesi.toString());
     return _okunanActivityNesnesi;
   }
 
-  Future<bool>  updateActivityPhoto(String activityId, String categoryPhotoUrl) async{
+  Future<bool> updateActivityPhoto(
+      String activityId, String categoryPhotoUrl) async {
     await _firestoreDb
         .collection("activities")
         .doc(activityId)
@@ -292,14 +291,15 @@ class FirestoreDBService implements DBBase {
     return true;
   }
 
-  Future<List<ActivityRequest>> getAllActivityRequests() async{
+  Future<List<ActivityRequest>> getAllActivityRequests() async {
     QuerySnapshot querySnapshot =
         await _firestoreDb.collection("activityWaiting").get();
 
     List<ActivityRequest> tumAktiviteIstekleri = [];
 
     for (DocumentSnapshot tekAktiviteIstegi in querySnapshot.docs) {
-      ActivityRequest _tekActivity = ActivityRequest.fromJson(tekAktiviteIstegi.data());
+      ActivityRequest _tekActivity =
+          ActivityRequest.fromJson(tekAktiviteIstegi.data());
       if (_tekActivity.status.contains("Waiting")) {
         tumAktiviteIstekleri.add(_tekActivity);
       }
@@ -310,12 +310,12 @@ class FirestoreDBService implements DBBase {
     return tumAktiviteIstekleri;
   }
 
-  Future<bool> updateProfilPhotoFromRequests(String userID, String profilPhotoUrl) async{
-
+  Future<bool> updateProfilPhotoFromRequests(
+      String userID, String profilPhotoUrl) async {
     QuerySnapshot querySnapshot =
-    await _firestoreDb.collection("clubWaiting").get();
+        await _firestoreDb.collection("clubWaiting").get();
 
-   // List<ClubRequest> tumKlupIstekleri = [];
+    // List<ClubRequest> tumKlupIstekleri = [];
     print("geldi");
 
     for (DocumentSnapshot tekKlubIstegi in querySnapshot.docs) {
@@ -331,35 +331,241 @@ class FirestoreDBService implements DBBase {
 
         print("bu gelen");
         print(profilPhotoUrl.toString());
-print("bu yenisi");
-print(_tekClub.userPhotoUrl);
+        print("bu yenisi");
+        print(_tekClub.userPhotoUrl);
       }
       // test = ;
       // print("tek konusma  -----------> + ");
       // print(_tekClub.name);
     }
 
-
     return true;
-
   }
 
-/*
-  @override
-  Future<List<User>> getAllUser() async {
+  Future<String> checkClubAttendance(String clubId, String userId) async {
+    DocumentSnapshot _okunanClubRequest = await _firestoreDb
+        .collection("clubAttendant")
+        .doc(userId + clubId)
+        .get();
+    if (_okunanClubRequest.data() != null) {
+      Map<String, dynamic> _okunanClubBilgileriMap = _okunanClubRequest.data();
+      //  print("okunan Club Bilgileri Map");
+      // print(_okunanClubBilgileriMap);
+      ClubRequest _okunanClubNesnesi =
+          ClubRequest.fromJson(_okunanClubBilgileriMap);
+      //  print("okuunan club nesnesi" + _okunanClubNesnesi.toString());
+      return _okunanClubNesnesi.status;
+    } else
+      return null;
+  }
+
+  Future<List<ClubRequest>> getClubAttendants(String clubID) async {
     QuerySnapshot querySnapshot =
-        await _firestoreDb.collection("users").getDocuments();
-    List<User> tumKullanicilar = [];
-    for (DocumentSnapshot tekUser in querySnapshot.documents) {
-      User _tekUser = User.fromMap(tekUser.data);
-      tumKullanicilar.add(_tekUser);
+        await _firestoreDb.collection("clubAttendant").get();
+
+    List<ClubRequest> tumKlupKatilimcilari = [];
+
+    for (DocumentSnapshot tekKlupIstegi in querySnapshot.docs) {
+      ClubRequest _tekClub = ClubRequest.fromJson(tekKlupIstegi.data());
+      if (_tekClub.clubId.contains(clubID)) {
+        tumKlupKatilimcilari.add(_tekClub);
+        print("----");
+        print(_tekClub.userName);
+      }
+      // test = ;
+      // print("tek konusma  -----------> + ");
+      // print(_tekClub.name);
+    }
+    return tumKlupKatilimcilari;
+  }
+
+  Future<List<Activity>> getClubBasedActivities(String clubID) async {
+    QuerySnapshot querySnapshot =
+        await _firestoreDb.collection("activities").get();
+
+    List<Activity> tumKlupAktiviteleri = [];
+
+    for (DocumentSnapshot tekKlupAktivitesi in querySnapshot.docs) {
+      Activity _tekClub = Activity.fromJson(tekKlupAktivitesi.data());
+      if (_tekClub.clubId.contains(clubID)) {
+        tumKlupAktiviteleri.add(_tekClub);
+        print("----");
+        print(_tekClub.name);
+      }
+      // test = ;
+      // print("tek konusma  -----------> + ");
+      // print(_tekClub.name);
+    }
+    return tumKlupAktiviteleri;
+  }
+
+  Future<ActivityRequest> checkActivityRequest(
+      String activityId, String userId) async {
+    DocumentSnapshot _okunanActivityRequest = await _firestoreDb
+        .collection("activityWaiting")
+        .doc(userId + activityId)
+        .get();
+    print(_okunanActivityRequest.data());
+    // print("okunan Club Request");
+
+    if (_okunanActivityRequest.data() != null) {
+      Map<String, dynamic> _okunanActivityBilgileriMap =
+          _okunanActivityRequest.data();
+      //  print("okunan Club Bilgileri Map");
+      // print(_okunanClubBilgileriMap);
+      ActivityRequest _okunanActivityNesnesi =
+          ActivityRequest.fromJson(_okunanActivityBilgileriMap);
+      //  print("okuunan club nesnesi" + _okunanClubNesnesi.toString());
+      return _okunanActivityNesnesi;
+    } else
+      return null;
+  }
+
+  Future<String> checkActivityAttendance(
+      String activityId, String userId) async {
+    DocumentSnapshot _okunanActivityRequest = await _firestoreDb
+        .collection("activityAttendant")
+        .doc(userId + activityId)
+        .get();
+    if (_okunanActivityRequest.data() != null) {
+      Map<String, dynamic> _okunanActivityBilgileriMap =
+          _okunanActivityRequest.data();
+      //  print("okunan Club Bilgileri Map");
+      // print(_okunanClubBilgileriMap);
+      ActivityRequest _okunanActivityNesnesi =
+          ActivityRequest.fromJson(_okunanActivityBilgileriMap);
+      //  print("okuunan club nesnesi" + _okunanClubNesnesi.toString());
+      return _okunanActivityNesnesi.status;
+    } else
+      return null;
+  }
+
+  Future<bool> addActivityAttendantRequest(
+      ActivityRequest activityRequest) async {
+    String userIdActivityId =
+        activityRequest.userId + activityRequest.activityId;
+    print("firestore a geldi eklemek için");
+    await _firestoreDb
+        .collection("activityWaiting")
+        .doc(userIdActivityId)
+        .set(activityRequest.toJson());
+    return true;
+  }
+
+  Future<bool> changeRequestTypeForActivity(
+      ActivityRequest activityRequest) async {
+    String userIdActivityId =
+        activityRequest.userId + activityRequest.activityId;
+    print("firestore a geldi eklemek için");
+    await _firestoreDb
+        .collection("activityWaiting")
+        .doc(userIdActivityId)
+        .set(activityRequest.toJson());
+    if (activityRequest.status.contains("Approved")) {
+      await _firestoreDb
+          .collection("activityAttendant")
+          .doc(userIdActivityId)
+          .set(activityRequest.toJson());
+      await _firestoreDb
+          .collection("activityWaiting")
+          .doc(userIdActivityId)
+          .delete();
     }
 
-    //Map metodu ile
-    // tumKullanicilar =querySnapshot.documents.map((tekSatir) => User.fromMap(tekSatir.data));
-
-    return tumKullanicilar;
+    return true;
   }
-*/
+
+  Future<bool> createPost(Post post) async {
+    //  DocumentSnapshot _okunanActivity = await FirebaseFirestore.instance.doc("activities/${activity.id}").get();
+
+    post.dateTime = DateTime.now();
+    //.toUtc().millisecondsSinceEpoch
+    var userIdAndDateTime = post.userId + post.dateTime.toUtc().millisecondsSinceEpoch.toString();
+    post.postDocId = userIdAndDateTime;
+    print("yazılıyor ");
+    print(post.dateTime);
+    await _firestoreDb
+        .collection("posts")
+        .doc(post.activityId)
+        .collection("posts")
+        .doc(post.postDocId)
+        .set(post.toJson());
+    return true;
+  }
+
+  Future<Post> readPost(Post post) async {
+  //  var userIdAndDateTime = post.userId + post.dateTime.toString();
+    DocumentSnapshot _okunanPost = await _firestoreDb
+        .collection("posts")
+        .doc(post.activityId)
+        .collection("posts")
+        .doc(post.postDocId)
+        .get();
+
+    Map<String, dynamic> _okunanPostBilgileriMap = _okunanPost.data();
+
+    Post _okunanPostNesnesi = Post.fromJson(_okunanPostBilgileriMap);
+    print("okuunan club nesnesi" + _okunanPostNesnesi.dateTime.toString());
+    return _okunanPostNesnesi;
+  }
+
+  Future<bool> updatePostPhoto(Post sonuc, String postPhotoUrl) async {
+    //var userIdAndDateTime = sonuc.userId + sonuc.dateTime.toString();
+
+    print("update e çaşılışan userIdDatetime "+sonuc.postDocId);
+   try{
+
+     await _firestoreDb
+         .collection("posts")
+         .doc(sonuc.activityId)
+         .collection("posts")
+         .doc(sonuc.postDocId)
+         .update({"photoUrl": postPhotoUrl});
+   }
+   catch(e){
+     print("hata burdadır "+e.toString());
+   }
+
+    return true;
+  }
+
+  Future<List<Post>> getPostsOfActivity(String activityId) async{
+    QuerySnapshot querySnapshot =
+    await _firestoreDb.collection("posts").doc(activityId).collection("posts").orderBy("dateTime",descending: true).get();
+
+    List<Post> tumAktivitePostlari = [];
+
+    for (DocumentSnapshot tekAktivitePost in querySnapshot.docs) {
+      Post _tekPost = Post.fromJson(tekAktivitePost.data());
+      if (_tekPost.activityId.contains(activityId)) {
+        tumAktivitePostlari.add(_tekPost);
+        print("----");
+        print(_tekPost.userName);
+      }
+      // test = ;
+      // print("tek konusma  -----------> + ");
+      // print(_tekClub.name);
+    }
+    return tumAktivitePostlari;
+  }
+
+  Future<List<ActivityRequest>>   getAllApprovalActivityRequests(String userID) async{
+    QuerySnapshot querySnapshot =
+    await _firestoreDb.collection("activityAttendant").get();
+
+    List<ActivityRequest> tumAktiviteIstekleri = [];
+
+    for (DocumentSnapshot tekAktiviteIstegi in querySnapshot.docs) {
+      ActivityRequest _tekAktivite = ActivityRequest.fromJson(tekAktiviteIstegi.data());
+      if (_tekAktivite.userId.contains(userID)) {
+        tumAktiviteIstekleri.add(_tekAktivite);
+      }
+    }
+    return tumAktiviteIstekleri;
+  }
+
+
+
+
 
 }

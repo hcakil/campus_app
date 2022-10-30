@@ -25,6 +25,12 @@ const chatBubbleGradient = const LinearGradient(
   end: Alignment.bottomLeft,
 );
 
+const clubDescGradient = const LinearGradient(
+  colors: const [Color(0xffDA44bb), Color(0xff8921aa)],
+  begin: Alignment.topRight,
+  end: Alignment.bottomLeft,
+);
+
 const chatBubbleGradient2 = const LinearGradient(
   colors: const [Color(0xFFf4e3e3), Color(0xFFf4e3e3)],
   begin: Alignment.topRight,

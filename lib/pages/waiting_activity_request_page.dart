@@ -1,8 +1,9 @@
 import 'package:campusapp/custom_utils/colors.dart';
 import 'package:campusapp/custom_utils/fade_animation.dart';
+import 'package:campusapp/custom_utils/platform_duyarli_alert_dialog.dart';
 import 'package:campusapp/model/activityRequest.dart';
 import 'package:campusapp/pages/add_activity_page.dart';
-import 'package:campusapp/pages/add_category_page.dart';
+import 'package:campusapp/pages/add_club_page.dart';
 import 'package:campusapp/pages/waiting_club_request_page.dart';
 import 'package:campusapp/view_model/user_model.dart';
 import 'package:flutter/material.dart';
@@ -20,12 +21,15 @@ class _WaitingActivityRequestState extends State<WaitingActivityRequest> {
   String dialogString="İlk Değerlendirmeniz Alınmıştır!";
 
   Future<String> _approveRequest(
+      String activityId,
+      String activityName,
       String clubId,
       String userId,
       String clubName,
       String userName,
       String userProfileUrl,
-      String type
+      String type,
+
       ) async {
     // oAnkiKlup.name,_userModel.user.userName,_userModel.user.profilURL
 
@@ -34,8 +38,8 @@ class _WaitingActivityRequestState extends State<WaitingActivityRequest> {
       final _userModel = Provider.of<UserModel>(context, listen: false);
       try {
 
-        var sonuc = await _userModel.changeRequestTypeForClub(
-            clubId, userId, clubName, userName, userProfileUrl,type);
+        var sonuc = await _userModel.changeRequestTypeForActivity(
+          activityId,activityName,  clubId, userId, clubName, userName, userProfileUrl,type);
         //var url = await _userModel.uploadCategoryFile(_clubId, "club_photo", _clubPhoto);
         //print("sonuc --> $sonuc");
         if (sonuc.contains("Approved")) {
@@ -193,11 +197,11 @@ class _WaitingActivityRequestState extends State<WaitingActivityRequest> {
                   itemCount: tumKlupler.length,
                   itemBuilder: (context, index) {
 
-                    var oAnkiKlup = tumKlupler[index];
+                    var oAnkiAktivite = tumKlupler[index];
                     return GestureDetector(
                       onTap: () {
                         print("category name");
-                        print(oAnkiKlup.clubName);
+                        print(oAnkiAktivite.clubName);
 
                       },
                       child: FadeAnimation(
@@ -223,7 +227,7 @@ class _WaitingActivityRequestState extends State<WaitingActivityRequest> {
                               const BorderRadius.all(Radius.circular(20))),
                           child: Container(
                               child: ListTile(
-                                title: Text(oAnkiKlup.userName.toLowerCase(),
+                                title: Text(oAnkiAktivite.userName.toLowerCase(),
                                     style: TextStyle(
                                         fontSize: 20,
                                         color: Colors.white,
@@ -231,28 +235,33 @@ class _WaitingActivityRequestState extends State<WaitingActivityRequest> {
                                         letterSpacing: 2,
                                         fontFamily: "OpenSans")),
                                 subtitle: Text(
-                                  oAnkiKlup.activityName,
+                                  oAnkiAktivite.activityName,
                                   style: TextStyle(fontStyle: FontStyle.italic),
                                 ),
                                 leading: CircleAvatar(
                                   backgroundColor: Colors.white,
                                   backgroundImage:
-                                  NetworkImage(oAnkiKlup.userPhotoUrl),
+                                  NetworkImage(oAnkiAktivite.userPhotoUrl),
                                   radius: 30,
                                 ),
                                 trailing: Row(
                                   mainAxisSize: MainAxisSize.min,
                                   children: [
                                     InkWell(
-                                      onTap: ()  {
+                                      onTap: ()  async{
 
-                                        print("Onay geldi");/*
+                                        print("Onay geldi");
                                         var result = await _approveRequest(
-                                            oAnkiKlup.clubId,
-                                            _userModel.user.userID,
-                                            oAnkiKlup.clubName,
-                                            _userModel.user.userName,
-                                            _userModel.user.profilURL,
+                                            oAnkiAktivite.activityId,
+                                            oAnkiAktivite.activityName,
+                                            oAnkiAktivite.clubId,
+                                            oAnkiAktivite.userId,
+                                            //_userModel.user.userID,
+                                            oAnkiAktivite.clubName,
+                                            oAnkiAktivite.userName,
+                                            oAnkiAktivite.userPhotoUrl,
+                                           // _userModel.user.userName,
+                                           // _userModel.user.profilURL,
                                             "Approved"
                                         );
 
@@ -268,7 +277,7 @@ class _WaitingActivityRequestState extends State<WaitingActivityRequest> {
                                           ).goster(context);
 
 
-                                        }*/
+                                        }
                                       },
                                       child: Container(
                                         height: 40,
@@ -283,13 +292,16 @@ class _WaitingActivityRequestState extends State<WaitingActivityRequest> {
                                     InkWell(onTap: () async{
 
 
-                                      print("Ret geldi");/*
+                                      print("Ret geldi");
                                       var result = await _approveRequest(
-                                          oAnkiKlup.clubId,
-                                          _userModel.user.userID,
-                                          oAnkiKlup.clubName,
-                                          _userModel.user.userName,
-                                          _userModel.user.profilURL,
+                                          oAnkiAktivite.activityId,
+                                          oAnkiAktivite.activityName,
+                                          oAnkiAktivite.clubId,
+                                          oAnkiAktivite.userId,
+                                          //_userModel.user.userID,
+                                          oAnkiAktivite.clubName,
+                                          oAnkiAktivite.userName,
+                                          oAnkiAktivite.userPhotoUrl,
                                           "Denied"
                                       );
 
@@ -305,7 +317,7 @@ class _WaitingActivityRequestState extends State<WaitingActivityRequest> {
                                         ).goster(context);
 
 
-                                      }*/
+                                      }
                                     },
                                         child: Container(
                                             height: 40,

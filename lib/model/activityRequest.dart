@@ -33,6 +33,9 @@ class ActivityRequest {
   String userPhotoUrl;
 
 
+
+
+
   factory ActivityRequest.fromJson(Map<String, dynamic> json) => ActivityRequest(
     status: json["status"],
     clubId: json["clubId"],

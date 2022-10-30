@@ -1,6 +1,7 @@
 import 'dart:io';
 import 'dart:math';
 
+import 'package:campusapp/model/post.dart';
 import 'package:firebase_storage/firebase_storage.dart' as firebase_storage;
 import 'package:campusapp/service/storage_base.dart';
 
@@ -63,5 +64,27 @@ class FirebaseStorageService implements StorageBase {
 
     return url;
 
+  }
+
+  Future<String> uploadPostFile(Post sonuc, String fileType, File postPhoto) async {
+
+    //var userIdAndDateTime = sonuc.userId+sonuc.dateTime.toString();
+
+      _storageReference = firebase_storage.FirebaseStorage.instance
+          .ref()
+          .child(sonuc.activityId)
+          .child(fileType)
+          .child(sonuc.postDocId);
+
+
+
+
+    firebase_storage.UploadTask uploadTask =
+    _storageReference.putFile(postPhoto);
+    firebase_storage.TaskSnapshot snapshot = await uploadTask;
+
+    var url = await _storageReference.getDownloadURL();
+
+    return url;
   }
 }

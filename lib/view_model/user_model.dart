@@ -5,6 +5,7 @@ import 'package:campusapp/model/activity.dart';
 import 'package:campusapp/model/activityRequest.dart';
 import 'package:campusapp/model/club.dart';
 import 'package:campusapp/model/clubRequest.dart';
+import 'package:campusapp/model/post.dart';
 import 'package:campusapp/model/user.dart';
 import 'package:campusapp/repository/user_repository.dart';
 import 'package:campusapp/service/auth_base.dart';
@@ -18,9 +19,11 @@ class UserModel with ChangeNotifier implements AuthBase {
   MyUser _user;
   Club _club;
   Activity _activity;
+  Post _post;
   String emailHataMesaji;
   String sifreHataMesaji;
   String requestResultForClub;
+  String requestResultForActivity;
 
   MyUser get user => _user;
 
@@ -77,7 +80,7 @@ class UserModel with ChangeNotifier implements AuthBase {
   Future<MyUser> createUserWithSignInWithEmail(
       String email, String sifre, String interest) async {
     //if (emailSifreKontrol(email, sifre)) {
-    print("$interest  interest in user model");
+   // print("$interest  interest in user model");
     try {
       state = ViewState.Busy;
       _user = await _userRepository.createUserWithSignInWithEmail(
@@ -247,6 +250,89 @@ print("e mail şifre kontrole geşdi  -->"+email + "  "+sifre);
 
   Future<List<ActivityRequest>> getAllActivityRequests() async {
     return await _userRepository.getAllActivityRequests();
+  }
+
+  Future<List<ClubRequest>>   getClubAttendants(String clubId) async{
+
+    return await _userRepository.getClubAttendants(clubId);
+  }
+
+  Future<List<Activity>>  getClubBasedActivities(String clubId) async{
+    return await _userRepository.getClubBasedActivities(clubId);
+  }
+
+  Future<String>  addRequestForActivity(String activityId,String activityName, String clubId, String userId, String clubName, String userName, String userProfileUrl) async{
+    try {
+      // state = ViewState.Busy;
+      //  print(" model  -->club id $clubId and user id $userId");
+      requestResultForActivity = await _userRepository.addRequestForActivity(
+          ActivityRequest.status(
+              activityId: activityId,
+              activityName: activityName,
+              clubId: clubId,
+              userId: userId,
+              userName: userName,
+              userPhotoUrl: userProfileUrl,
+              clubName: clubName));
+      return requestResultForActivity;
+    } finally {
+      // state = ViewState.Idle;
+    }
+  }
+
+  Future<String>  changeRequestTypeForActivity(String activityId, String activityName, String clubId, String userId, String clubName, String userName, String userProfileUrl, String type) async{
+    try {
+      // state = ViewState.Busy;
+      //  print(" model  -->club id $clubId and user id $userId");
+      requestResultForActivity = await _userRepository.changeRequestTypeForActivity(type,
+          ActivityRequest.status(
+              activityId: activityId,
+              activityName: activityName,
+              clubId: clubId,
+              userId: userId,
+              userName: userName,
+              userPhotoUrl: userProfileUrl,
+              clubName: clubName));
+      return requestResultForActivity;
+    } finally {
+      // state = ViewState.Idle;
+    }
+  }
+
+  Future<Post>   addPost(Post post) async{
+    try {
+    //  state = ViewState.Busy;
+      _post = await _userRepository.createPost(post);
+      return _post;
+    } finally {
+      // state = ViewState.Idle;
+    }
+  }
+
+  Future<String>  uploadPostFile(Post sonuc, String fileType, File postPhoto) async{
+    try {
+      var indirmeLinki =
+      await _userRepository.uploadPostFile(sonuc, fileType, postPhoto);
+      return indirmeLinki;
+    } finally {
+    //  state = ViewState.Idle;
+    }
+  }
+
+  Future<List<Post>>  getPostsOfActivities(String activityId) async {
+    return await _userRepository.getPostsOfActivities(activityId);
+  }
+
+  Future<List<ActivityRequest>>  getAllApprovalActivityRequests(String userID) async{
+    return await _userRepository.getAllApprovalActivityRequests(userID);
+  }
+
+  Future<Activity>  getActivityWithId(String activityId) async{
+    return await _userRepository.getActivityWithId(activityId);
+  }
+
+  Future<Club>  getClubWithId(String clubId) async{
+    return await _userRepository.getClubWithId(clubId);
   }
 
 /*Future<List<MyUser>> getUserWithPagination(
