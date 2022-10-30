@@ -1,0 +1,47 @@
+{
+  "project_info": {
+    "project_number": "313757630167",
+    "project_id": "campus-app-1951a",
+    "storage_bucket": "campus-app-1951a.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:313757630167:android:95222ef472b781bcc5fa92",
+        "android_client_info": {
+          "package_name": "com.digitalpratix.campusapp"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "313757630167-pdt23f5iru594ova7t9qr1g0l8ld1qlu.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.digitalpratix.campusapp",
+            "certificate_hash": "5b5c3af15f95a78c9ae414f031cdb7c86b6a232f"
+          }
+        },
+        {
+          "client_id": "313757630167-0rdfphhkd5nso2vbbpue2g1et6o074k6.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAl-Ieu6qjmWB-3wjy0W1NeYuKDJ87Xrxw"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "313757630167-0rdfphhkd5nso2vbbpue2g1et6o074k6.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
